@@ -1,0 +1,19 @@
+package com.unchk.backend.users.repository;
+
+import com.unchk.backend.users.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+/**
+ * Repo... de gestion des utilisateurs
+ */
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    /**
+     * Recherche utilisateur par email
+     * @param email email utilisateur
+     * @return  utilisateur trouvé
+     */
+    Optional<User> findByEmail(String email);
+}
