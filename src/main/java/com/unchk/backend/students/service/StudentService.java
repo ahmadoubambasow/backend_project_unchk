@@ -126,8 +126,81 @@ public class StudentService {
         long count = studentRepository.count() +1;
 
         return String.format(
-                "STD2026%03D",
+                "STD2026%03d",
                 count
         );
+    }
+
+    /**
+     * Supression étudiant
+     */
+    public void deleteStudent(Long id) {
+
+        // Vérifier existence
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() ->
+
+                    new RuntimeException("Etudiant introuvable")
+                );
+
+        // SUppression
+        studentRepository.delete(student);
+    }
+
+    /**
+     * Mise à jour étudiant.
+     */
+    public StudentResponseDTO updateStudent(
+
+            Long id,
+
+            StudentRequestDTO request
+    ) {
+
+        // Recherche étudiant
+        Student student =
+                studentRepository.findById(id)
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Étudiant introuvable"
+                                )
+                        );
+
+        // Mise à jour
+        student.setFirstName(
+                request.getFirstName()
+        );
+
+        student.setLastName(
+                request.getLastName()
+        );
+
+        student.setEmail(
+                request.getEmail()
+        );
+
+        student.setPhone(
+                request.getPhone()
+        );
+
+        student.setGender(
+                request.getGender()
+        );
+
+        student.setBirthDate(
+                request.getBirthDate()
+        );
+
+        student.setAddress(
+                request.getAddress()
+        );
+
+        // Sauvegarde
+        Student updatedStudent =
+                studentRepository.save(student);
+
+        return mapToResponse(updatedStudent);
     }
 }

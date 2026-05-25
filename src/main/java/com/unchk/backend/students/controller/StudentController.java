@@ -40,4 +40,41 @@ public class StudentController {
     public List<StudentResponseDTO> getAllStudents() {
         return studentService.getAllStudents();
     }
+
+    /**
+     * Supression étudiant
+     */
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public void deleteStudent(
+            @PathVariable
+            Long id
+    ) {
+
+        studentService.deleteStudent(id);
+    }
+
+    /**
+     * Mise à jour étudiant.
+     */
+    @PreAuthorize(
+
+            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
+    )
+    @PutMapping("/{id}")
+    public StudentResponseDTO updateStudent(
+
+            @PathVariable
+            Long id,
+
+            @Valid
+            @RequestBody
+            StudentRequestDTO request
+    ) {
+
+        return studentService.updateStudent(
+                id,
+                request
+        );
+    }
 }
