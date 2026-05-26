@@ -41,4 +41,36 @@ public class FormationController {
 
         return formationService.getAllFormations();
     }
+
+    /**
+     * Mise à jour formation
+     */
+    @PreAuthorize(
+            "hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')"
+    )
+    @PutMapping("/{id}")
+    public FormationResponseDTO updateFormation(
+            @PathVariable
+            Long id,
+            @Valid
+            @RequestBody
+            FormationRequestDTO request
+    ) {
+
+        return formationService.updateFormation(id, request);
+    }
+
+    /**
+     * Suppression formation
+     */
+    @PreAuthorize(
+            "hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')"
+    )
+    @DeleteMapping("/{id}")
+    public void deleteFormation(
+            @PathVariable
+            Long id
+    ) {
+        formationService.deleteFormation(id);
+    }
 }

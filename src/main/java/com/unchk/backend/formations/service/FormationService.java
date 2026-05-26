@@ -47,6 +47,38 @@ public class FormationService {
     }
 
     /**
+     * Mise à jour formation
+     */
+    public FormationResponseDTO updateFormation(Long id, FormationRequestDTO request) {
+
+        Formation formation = formationRepository.findById(id)
+                .orElseThrow(() ->
+                    new RuntimeException("Formation introuvable")
+                );
+
+        // Mise à jour
+        formation.setName(request.getName());
+        formation.setDescription(request.getDescription());
+        formation.setDuration(request.getDuration());
+
+        Formation updatedFormation =  formationRepository.save(formation);
+        return mapToResponse(updatedFormation);
+    }
+
+    /**
+     * Suppression formation
+     */
+    public void deleteFormation(Long id) {
+
+        Formation formation = formationRepository.findById(id)
+                .orElseThrow(() ->
+
+                    new RuntimeException("Formation introuvable")
+                );
+        formationRepository.delete(formation);
+    }
+
+    /**
      * Génération code formation
      */
     private String generateCode() {
