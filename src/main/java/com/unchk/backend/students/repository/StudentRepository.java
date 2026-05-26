@@ -1,6 +1,7 @@
 package com.unchk.backend.students.repository;
 
 import com.unchk.backend.students.entity.Student;
+import com.unchk.backend.students.entity.StudentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -19,4 +20,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
      * Recherche étudiant par matricule
      */
     Optional<Student> findByMatricule(String matricule);
+
+    /**
+     * Nombre étudiants par status
+     */
+    long countByStatus(StudentStatus status);
 }
