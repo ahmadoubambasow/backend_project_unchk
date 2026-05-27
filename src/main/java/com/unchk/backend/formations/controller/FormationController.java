@@ -21,7 +21,7 @@ public class FormationController {
      * Création formation
      */
     @PreAuthorize(
-            "hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')"
+            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
     )
     @PostMapping
     public FormationResponseDTO createFormation(
@@ -46,7 +46,7 @@ public class FormationController {
      * Mise à jour formation
      */
     @PreAuthorize(
-            "hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')"
+            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
     )
     @PutMapping("/{id}")
     public FormationResponseDTO updateFormation(
