@@ -1,12 +1,12 @@
 package com.unchk.backend.trainers.service;
 
-import com.unchk.backend.formations.entity.Formation;
-import com.unchk.backend.formations.repository.FormationRepository;
 import com.unchk.backend.trainers.dto.TrainerRequestDTO;
 import com.unchk.backend.trainers.dto.TrainerResponseDTO;
 import com.unchk.backend.trainers.entity.Trainer;
 import com.unchk.backend.trainers.repository.TrainerRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,49 +17,70 @@ public class TrainerService {
 
     private final TrainerRepository trainerRepository;
 
-    private final FormationRepository formationRepository;
-
     /**
-     * Creation formateur
+     * Création formateur
      */
-    public TrainerResponseDTO createTrainer(TrainerRequestDTO request) {
+    public TrainerResponseDTO createTrainer(
+            TrainerRequestDTO request
+    ) {
 
         trainerRepository.findByEmail(
                 request.getEmail()
         ).ifPresent(trainer -> {
 
-            throw new RuntimeException("Email déjà utilisé");
+            throw new RuntimeException(
+                    "Email déjà utilisé"
+            );
         });
-
-        Formation formation = formationRepository.findById(
-                request.getFormationId()
-        )
-                .orElseThrow(() ->
-
-                       new RuntimeException("Formation introuvable")
-                );
 
         Trainer trainer = Trainer.builder()
 
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .phone(request.getPhone())
-                .speciality(request.getSpeciality())
-                .grade(request.getGrade())
-                .type(request.getType())
-                .formation(formation)
+                .firstName(
+                        request.getFirstName()
+                )
+
+                .lastName(
+                        request.getLastName()
+                )
+
+                .email(
+                        request.getEmail()
+                )
+
+                .phone(
+                        request.getPhone()
+                )
+
+                .speciality(
+                        request.getSpeciality()
+                )
+
+                .grade(
+                        request.getGrade()
+                )
+
+                .type(
+                        request.getType()
+                )
+
                 .build();
 
-        Trainer savedTrainer = trainerRepository.save(trainer);
+        Trainer savedTrainer =
 
-        return mapToResponse(savedTrainer);
+                trainerRepository.save(
+                        trainer
+                );
+
+        return mapToResponse(
+                savedTrainer
+        );
     }
 
     /**
      * Liste formateurs
      */
-    public List<TrainerResponseDTO> getAllTrainers() {
+    public List<TrainerResponseDTO>
+    getAllTrainers() {
 
         return trainerRepository.findAll()
 
@@ -73,74 +94,132 @@ public class TrainerService {
     /**
      * Mise à jour formateur
      */
-    public TrainerResponseDTO updateTrainer(Long id, TrainerRequestDTO request) {
+    public TrainerResponseDTO updateTrainer(
 
-        Trainer trainer = trainerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Formateur introuvable"));
+            Long id,
 
-        Formation formation = formationRepository.findById(request.getFormationId())
-                .orElseThrow(() -> new RuntimeException("Formation introuvable"));
+            TrainerRequestDTO request
+    ) {
 
-        trainer.setFirstName(request.getFirstName());
+        Trainer trainer =
 
-        trainer.setLastName(request.getLastName());
+                trainerRepository.findById(
+                                id
+                        )
 
-        trainer.setEmail(request.getEmail());
+                        .orElseThrow(() ->
 
-        trainer.setPhone(request.getPhone());
+                                new RuntimeException(
+                                        "Formateur introuvable"
+                                )
+                        );
 
-        trainer.setSpeciality(request.getSpeciality());
+        trainer.setFirstName(
+                request.getFirstName()
+        );
 
-        trainer.setGrade(request.getGrade());
+        trainer.setLastName(
+                request.getLastName()
+        );
 
-        trainer.setType(request.getType());
+        trainer.setEmail(
+                request.getEmail()
+        );
 
-        trainer.setFormation(formation);
+        trainer.setPhone(
+                request.getPhone()
+        );
 
-        Trainer updatedTrainer = trainerRepository.save(trainer);
+        trainer.setSpeciality(
+                request.getSpeciality()
+        );
 
-        return mapToResponse(updatedTrainer);
+        trainer.setGrade(
+                request.getGrade()
+        );
+
+        trainer.setType(
+                request.getType()
+        );
+
+        Trainer updatedTrainer =
+
+                trainerRepository.save(
+                        trainer
+                );
+
+        return mapToResponse(
+                updatedTrainer
+        );
     }
 
     /**
      * Suppression formateur
      */
-    public void deleteTrainer(Long id) {
+    public void deleteTrainer(
+            Long id
+    ) {
 
-        Trainer trainer = trainerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Formateur introuvable"));
+        Trainer trainer =
 
-        trainerRepository.delete(trainer);
+                trainerRepository.findById(
+                                id
+                        )
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Formateur introuvable"
+                                )
+                        );
+
+        trainerRepository.delete(
+                trainer
+        );
     }
 
     /**
      * Mapping Entity -> DTO
      */
-    private TrainerResponseDTO mapToResponse(Trainer trainer) {
+    private TrainerResponseDTO mapToResponse(
+            Trainer trainer
+    ) {
 
         return TrainerResponseDTO
 
                 .builder()
 
-                .id(trainer.getId())
+                .id(
+                        trainer.getId()
+                )
 
-                .firstName(trainer.getFirstName())
+                .firstName(
+                        trainer.getFirstName()
+                )
 
-                .lastName(trainer.getLastName())
+                .lastName(
+                        trainer.getLastName()
+                )
 
-                .email(trainer.getEmail())
+                .email(
+                        trainer.getEmail()
+                )
 
-                .phone(trainer.getPhone())
+                .phone(
+                        trainer.getPhone()
+                )
 
-                .speciality(trainer.getSpeciality())
+                .speciality(
+                        trainer.getSpeciality()
+                )
 
-                .grade(trainer.getGrade())
+                .grade(
+                        trainer.getGrade()
+                )
 
-                .type(trainer.getType())
-
-                .formationId(trainer.getFormation().getId())
-
-                .formationName(trainer.getFormation().getName())
+                .type(
+                        trainer.getType()
+                )
 
                 .build();
     }

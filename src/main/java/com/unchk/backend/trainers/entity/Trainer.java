@@ -36,12 +36,7 @@ public class Trainer {
     @Enumerated(EnumType.STRING)
     private TrainerType type;
 
-    /**
-     * Formation liée
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "formation_id")
-    private Formation formation;
+
 
 
 }

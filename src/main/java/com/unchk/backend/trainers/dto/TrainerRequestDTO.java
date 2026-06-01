@@ -31,6 +31,5 @@ public class TrainerRequestDTO {
     @NotNull
     private TrainerType type;
 
-    @NotNull
-    private Long formationId;
+
 }

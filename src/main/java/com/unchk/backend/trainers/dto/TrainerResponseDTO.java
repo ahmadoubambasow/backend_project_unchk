@@ -25,8 +25,4 @@ public class TrainerResponseDTO {
     private String grade;
 
     private TrainerType type;
-
-    private Long formationId;
-
-    private String formationName;
 }
