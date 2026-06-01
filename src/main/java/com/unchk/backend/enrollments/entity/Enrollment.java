@@ -1,8 +1,12 @@
 package com.unchk.backend.enrollments.entity;
 
 import com.unchk.backend.formations.entity.Formation;
+import com.unchk.backend.groups.entity.StudentGroup;
+import com.unchk.backend.promotions.entity.Promotion;
 import com.unchk.backend.students.entity.Student;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 
 import java.time.LocalDate;
@@ -10,7 +14,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "enrollments")
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,30 +36,39 @@ public class Enrollment {
     private Student student;
 
     /**
-     * Formation.
+     * Formation
      */
     @ManyToOne
     @JoinColumn(name = "formation_id")
     private Formation formation;
 
     /**
-     * Date inscription.
+     * Promotion
+     */
+    @ManyToOne
+    @JoinColumn(name = "promotion_id")
+    private Promotion promotion;
+
+    /**
+     * Groupe
+     */
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private StudentGroup group;
+
+    /**
+     * Date inscription
      */
     private LocalDate enrollmentDate;
 
     /**
-     * Année académique.
-     */
-    private String academicYear;
-
-    /**
-     * Statut inscription.
+     * Statut
      */
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
 
     /**
-     * Date création.
+     * Date création
      */
     private LocalDateTime createdAt;
 }

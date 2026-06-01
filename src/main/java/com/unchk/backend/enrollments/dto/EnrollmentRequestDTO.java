@@ -10,12 +10,27 @@ import lombok.*;
 @Builder
 public class EnrollmentRequestDTO {
 
+    /**
+     * Etudiant
+     */
     @NotNull
     private Long studentId;
 
+    /**
+     * Promotion
+     */
+    @NotNull
+    private Long promotionId;
+
+    /**
+     * Formation
+     */
     @NotNull
     private Long formationId;
 
+    /**
+     * Groupe
+     */
     @NotNull
-    private String academicYear;
+    private Long groupId;
 }

@@ -1,7 +1,6 @@
-package com.unchk.backend.formations.dto;
+package com.unchk.backend.filieres.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -9,15 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FormationRequestDTO {
+public class FiliereRequestDTO {
 
     @NotBlank
     private String name;
 
     private String description;
-
-    private Integer duration;
-
-    @NotNull
-    private Long filiereId;
 }

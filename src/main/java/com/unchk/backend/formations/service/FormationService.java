@@ -1,14 +1,19 @@
 package com.unchk.backend.formations.service;
 
-import com.unchk.backend.formations.dto.*;
-import com.unchk.backend.formations.entity.*;
+import com.unchk.backend.filieres.entity.Filiere;
+import com.unchk.backend.filieres.repository.FiliereRepository;
+import com.unchk.backend.formations.dto.FormationRequestDTO;
+import com.unchk.backend.formations.dto.FormationResponseDTO;
+import com.unchk.backend.formations.entity.Formation;
+import com.unchk.backend.formations.entity.FormationStatus;
 import com.unchk.backend.formations.repository.FormationRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,66 +21,166 @@ public class FormationService {
 
     private final FormationRepository formationRepository;
 
+    private final FiliereRepository filiereRepository;
+
     /**
      * Création formation
      */
-    public FormationResponseDTO createFormation(FormationRequestDTO request) {
+    public FormationResponseDTO createFormation(
+            FormationRequestDTO request
+    ) {
+
+        Filiere filiere =
+
+                filiereRepository.findById(
+                                request.getFiliereId()
+                        )
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Filière introuvable"
+                                )
+                        );
 
         Formation formation = Formation.builder()
+
                 .code(generateCode())
-                .name(request.getName())
-                .description(request.getDescription())
-                .duration(request.getDuration())
-                .status(FormationStatus.ACTIVE)
-                .createdAt(LocalDateTime.now())
+
+                .name(
+                        request.getName()
+                )
+
+                .description(
+                        request.getDescription()
+                )
+
+                .duration(
+                        request.getDuration()
+                )
+
+                .status(
+                        FormationStatus.ACTIVE
+                )
+
+                .createdAt(
+                        LocalDateTime.now()
+                )
+
+                .filiere(
+                        filiere
+                )
+
                 .build();
 
-        Formation savedFormation = formationRepository.save(formation);
+        Formation savedFormation =
 
-        return mapToResponse(savedFormation);
+                formationRepository.save(
+                        formation
+                );
+
+        return mapToResponse(
+                savedFormation
+        );
     }
 
     /**
      * Liste formations
      */
-    public List<FormationResponseDTO> getAllFormations() {
+    public List<FormationResponseDTO>
+    getAllFormations() {
 
         return formationRepository.findAll()
+
                 .stream()
+
                 .map(this::mapToResponse)
-                .collect(Collectors.toList());
+
+                .toList();
     }
 
     /**
      * Mise à jour formation
      */
-    public FormationResponseDTO updateFormation(Long id, FormationRequestDTO request) {
+    public FormationResponseDTO updateFormation(
 
-        Formation formation = formationRepository.findById(id)
-                .orElseThrow(() ->
-                    new RuntimeException("Formation introuvable")
+            Long id,
+
+            FormationRequestDTO request
+    ) {
+
+        Formation formation =
+
+                formationRepository.findById(id)
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Formation introuvable"
+                                )
+                        );
+
+        Filiere filiere =
+
+                filiereRepository.findById(
+                                request.getFiliereId()
+                        )
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Filière introuvable"
+                                )
+                        );
+
+        formation.setName(
+                request.getName()
+        );
+
+        formation.setDescription(
+                request.getDescription()
+        );
+
+        formation.setDuration(
+                request.getDuration()
+        );
+
+        formation.setFiliere(
+                filiere
+        );
+
+        Formation updatedFormation =
+
+                formationRepository.save(
+                        formation
                 );
 
-        // Mise à jour
-        formation.setName(request.getName());
-        formation.setDescription(request.getDescription());
-        formation.setDuration(request.getDuration());
-
-        Formation updatedFormation =  formationRepository.save(formation);
-        return mapToResponse(updatedFormation);
+        return mapToResponse(
+                updatedFormation
+        );
     }
 
     /**
      * Suppression formation
      */
-    public void deleteFormation(Long id) {
+    public void deleteFormation(
+            Long id
+    ) {
 
-        Formation formation = formationRepository.findById(id)
-                .orElseThrow(() ->
+        Formation formation =
 
-                    new RuntimeException("Formation introuvable")
-                );
-        formationRepository.delete(formation);
+                formationRepository.findById(id)
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Formation introuvable"
+                                )
+                        );
+
+        formationRepository.delete(
+                formation
+        );
     }
 
     /**
@@ -83,7 +188,9 @@ public class FormationService {
      */
     private String generateCode() {
 
-        long count = formationRepository.count() + 1;
+        long count =
+
+                formationRepository.count() + 1;
 
         return String.format(
                 "FRM2026%03d",
@@ -92,26 +199,72 @@ public class FormationService {
     }
 
     /**
-     * Conversion entity -> DTO
+     * Conversion Entity -> DTO
      */
-    private FormationResponseDTO mapToResponse(Formation formation) {
+    private FormationResponseDTO mapToResponse(
+            Formation formation
+    ) {
 
         return FormationResponseDTO.builder()
 
-                .id(formation.getId())
+                .id(
+                        formation.getId()
+                )
 
-                .code(formation.getCode())
+                .code(
+                        formation.getCode()
+                )
 
-                .name(formation.getName())
+                .name(
+                        formation.getName()
+                )
 
-                .description(formation.getDescription())
+                .description(
+                        formation.getDescription()
+                )
 
-                .duration(formation.getDuration())
+                .duration(
+                        formation.getDuration()
+                )
 
-                .status(formation.getStatus())
+                .status(
+                        formation.getStatus()
+                )
 
-                .createdAt(formation.getCreatedAt())
+                .createdAt(
+                        formation.getCreatedAt()
+                )
+
+                .filiereId(
+                        formation.getFiliere().getId()
+                )
+
+                .filiereName(
+                        formation.getFiliere().getName()
+                )
+
+                .filiereCode(
+                        formation.getFiliere().getCode()
+                )
 
                 .build();
+    }
+
+    public List<FormationResponseDTO>
+    getFormationsByFiliere(
+            Long filiereId
+    ) {
+
+        return formationRepository
+
+                .findByFiliereId(
+                        filiereId
+                )
+
+                .stream()
+
+                .map(this::mapToResponse)
+
+                .toList();
     }
 }

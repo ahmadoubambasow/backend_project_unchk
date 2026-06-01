@@ -25,4 +25,10 @@ public class FormationResponseDTO {
     private FormationStatus status;
 
     private LocalDateTime createdAt;
+
+    private Long filiereId;
+
+    private String filiereName;
+
+    private String filiereCode;
 }

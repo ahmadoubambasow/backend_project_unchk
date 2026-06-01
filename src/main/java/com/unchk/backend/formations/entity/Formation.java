@@ -1,5 +1,6 @@
 package com.unchk.backend.formations.entity;
 
+import com.unchk.backend.filieres.entity.Filiere;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -55,4 +56,11 @@ public class Formation {
      * Date création
      */
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(
+            name = "filiere_id",
+            nullable = false
+    )
+    private Filiere filiere;
 }

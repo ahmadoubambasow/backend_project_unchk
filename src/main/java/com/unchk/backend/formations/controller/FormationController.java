@@ -36,6 +36,9 @@ public class FormationController {
     /**
      * Liste formations
      */
+    @PreAuthorize(
+            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
+    )
     @GetMapping
     public List<FormationResponseDTO> getAllFormations() {
 
@@ -61,10 +64,27 @@ public class FormationController {
     }
 
     /**
+     * Formations d'une filière
+     */
+    @GetMapping("/filiere/{filiereId}")
+    public List<FormationResponseDTO>
+    getFormationsByFiliere(
+
+            @PathVariable
+            Long filiereId
+    ) {
+
+        return formationService
+                .getFormationsByFiliere(
+                        filiereId
+                );
+    }
+
+    /**
      * Suppression formation
      */
     @PreAuthorize(
-            "hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')"
+            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
     )
     @DeleteMapping("/{id}")
     public void deleteFormation(
