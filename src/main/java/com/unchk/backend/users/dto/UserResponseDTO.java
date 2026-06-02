@@ -31,5 +31,7 @@ public class UserResponseDTO {
     /**
      * Nom du role
      */
-    private  String role;
+    private  Long roleId;
+
+    private String roleName;
 }

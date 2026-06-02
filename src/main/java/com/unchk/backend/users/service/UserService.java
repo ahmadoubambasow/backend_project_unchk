@@ -6,78 +6,224 @@ import com.unchk.backend.users.entity.Role;
 import com.unchk.backend.users.entity.User;
 import com.unchk.backend.users.repository.RoleRepository;
 import com.unchk.backend.users.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service responsable de la gestion des utilisateurs
  */
 @Service
 @RequiredArgsConstructor
-
 public class UserService {
 
     private final UserRepository userRepository;
+
     private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * Création d'un utilisateur
-     *
-     * @param request données utlisateur
-     * @return utilisateur créé
+     * Création utilisateur
      */
-    public UserResponseDTO createUser(UserRequestDTO request) {
+    public UserResponseDTO createUser(
+            UserRequestDTO request
+    ) {
 
-        // Vérifie si le role existe
-        Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleRepository
 
-        // Création uilisateur
+                .findById(
+                        request.getRoleId()
+                )
+
+                .orElseThrow(() ->
+
+                        new RuntimeException(
+                                "Role introuvable"
+                        )
+                );
+
         User user = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(role)
+
+                .fullName(
+                        request.getFullName()
+                )
+
+                .email(
+                        request.getEmail()
+                )
+
+                .password(
+                        passwordEncoder.encode(
+                                request.getPassword()
+                        )
+                )
+
+                .role(
+                        role
+                )
+
                 .build();
 
-        // Sauvegarde en base
-        User savedUser = userRepository.save(user);
+        User savedUser =
 
-        // Retour DTO sécurisé
-        return mapToResponse(savedUser);
+                userRepository.save(
+                        user
+                );
+
+        return mapToResponse(
+                savedUser
+        );
     }
 
     /**
-     * Retourne tous les utilisateurs
-     *
-     * @return liste utilisateurs
+     * Liste utilisateurs
      */
-    public List<UserResponseDTO> getAllUsers() {
+    public List<UserResponseDTO>
+    getAllUsers() {
+
         return userRepository.findAll()
+
                 .stream()
+
                 .map(this::mapToResponse)
+
                 .toList();
     }
 
     /**
-     * Conversion User -> UserResponseDTO
-     *
-     * @param user utilisateur
-     * @return DTO sécurisé
+     * Modification utilisateur
      */
+    public UserResponseDTO updateUser(
 
-    private UserResponseDTO mapToResponse(User user) {
+            Long id,
 
-        return UserResponseDTO.builder()
-                .id(user.getId())
-                .fullName(user.getFullName())
-                .email(user.getEmail())
-                .role(user.getRole().getName())
+            UserRequestDTO request
+    ) {
+
+        User user =
+
+                userRepository.findById(id)
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Utilisateur introuvable"
+                                )
+                        );
+
+        Role role =
+
+                roleRepository.findById(
+                                request.getRoleId()
+                        )
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Role introuvable"
+                                )
+                        );
+
+        user.setFullName(
+                request.getFullName()
+        );
+
+        user.setEmail(
+                request.getEmail()
+        );
+
+        user.setRole(
+                role
+        );
+
+        if (
+
+                request.getPassword() != null
+
+                        &&
+
+                        !request.getPassword().isBlank()
+
+        ) {
+
+            user.setPassword(
+
+                    passwordEncoder.encode(
+                            request.getPassword()
+                    )
+            );
+        }
+
+        User updatedUser =
+
+                userRepository.save(
+                        user
+                );
+
+        return mapToResponse(
+                updatedUser
+        );
+    }
+
+    /**
+     * Suppression utilisateur
+     */
+    public void deleteUser(
+            Long id
+    ) {
+
+        User user =
+
+                userRepository.findById(id)
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Utilisateur introuvable"
+                                )
+                        );
+
+        userRepository.delete(
+                user
+        );
+    }
+
+    /**
+     * Mapping Entity -> DTO
+     */
+    private UserResponseDTO mapToResponse(
+            User user
+    ) {
+
+        return UserResponseDTO
+
+                .builder()
+
+                .id(
+                        user.getId()
+                )
+
+                .fullName(
+                        user.getFullName()
+                )
+
+                .email(
+                        user.getEmail()
+                )
+
+                .roleId(
+                        user.getRole().getId()
+                )
+
+                .roleName(
+                        user.getRole().getName()
+                )
+
                 .build();
     }
 }

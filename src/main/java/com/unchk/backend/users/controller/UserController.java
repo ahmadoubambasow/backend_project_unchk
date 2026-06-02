@@ -38,4 +38,32 @@ public class UserController {
     public List<UserResponseDTO> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    @PutMapping("/{id}")
+    public UserResponseDTO updateUser(
+
+            @PathVariable
+            Long id,
+
+            @Valid
+            @RequestBody
+            UserRequestDTO request
+    ) {
+
+        return userService.updateUser(
+                id,
+                request
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(
+            @PathVariable
+            Long id
+    ) {
+
+        userService.deleteUser(
+                id
+        );
+    }
 }

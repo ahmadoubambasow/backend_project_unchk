@@ -39,5 +39,5 @@ public class UserRequestDTO {
      * Nom du role
      */
     @NotBlank(message = "Le role est obligatoire")
-    private String role;
+    private Long roleId;
 }

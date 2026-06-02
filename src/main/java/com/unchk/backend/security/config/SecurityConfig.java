@@ -44,10 +44,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // Routes publiques
-                        .requestMatchers("/api/auth/***").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/uploads/**"
+                        ).permitAll()
+
 
                         // Routes protégées
                         .anyRequest().authenticated()
+
+
                 )
 
                 // Ajout filtre JWT
