@@ -12,6 +12,7 @@ import com.unchk.backend.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -101,6 +102,25 @@ public class FormationTrainerService {
 
                         .build();
 
+        if (
+
+                formationTrainerRepository
+
+                        .existsByFormationIdAndTrainerId(
+
+                                formation.getId(),
+
+                                trainer.getId()
+                        )
+
+        ) {
+
+            throw new RuntimeException(
+
+                    "Ce formateur est déjà affecté à cette formation"
+            );
+        }
+
         formationTrainerRepository.save(
                 formationTrainer
         );
@@ -155,6 +175,7 @@ public class FormationTrainerService {
     /**
      * Retirer formateur
      */
+    @Transactional
     public void removeTrainer(
 
             Long formationId,

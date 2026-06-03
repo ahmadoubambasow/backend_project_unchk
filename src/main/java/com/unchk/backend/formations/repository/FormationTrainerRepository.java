@@ -16,4 +16,11 @@ public interface FormationTrainerRepository
             Long formationId,
             Long trainerId
     );
+
+    boolean existsByFormationIdAndTrainerId(
+
+            Long formationId,
+
+            Long trainerId
+    );
 }
