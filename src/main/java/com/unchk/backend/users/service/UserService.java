@@ -194,6 +194,33 @@ public class UserService {
     }
 
     /**
+     * Récupérer les trainers
+     */
+    public List<UserResponseDTO> getAllTrainers() {
+
+        List<String> trainerRoles = List.of(
+
+                "ENSEIGNANT",
+
+                "ENSEIGNANT_ASSOCIE",
+
+                "TUTEUR"
+        );
+
+        return userRepository
+
+                .findByRole_NameIn(
+                        trainerRoles
+                )
+
+                .stream()
+
+                .map(this::mapToResponse)
+
+                .toList();
+    }
+
+    /**
      * Mapping Entity -> DTO
      */
     private UserResponseDTO mapToResponse(

@@ -3,9 +3,15 @@ package com.unchk.backend.formations.controller;
 import com.unchk.backend.formations.dto.FormationRequestDTO;
 import com.unchk.backend.formations.dto.FormationResponseDTO;
 import com.unchk.backend.formations.service.FormationService;
+
 import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,82 +21,106 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FormationController {
 
-    private final FormationService  formationService;
+    private final FormationService
+            formationService;
 
     /**
-     * Création formation
+     * Création
      */
     @PreAuthorize(
-            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
+            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
     )
     @PostMapping
-    public FormationResponseDTO createFormation(
+    public FormationResponseDTO
+    createFormation(
+
             @Valid
             @RequestBody
             FormationRequestDTO request
-    ) {
 
-        return formationService.createFormation(request);
-    }
-
-    /**
-     * Liste formations
-     */
-    @PreAuthorize(
-            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
-    )
-    @GetMapping
-    public List<FormationResponseDTO> getAllFormations() {
-
-        return formationService.getAllFormations();
-    }
-
-    /**
-     * Mise à jour formation
-     */
-    @PreAuthorize(
-            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
-    )
-    @PutMapping("/{id}")
-    public FormationResponseDTO updateFormation(
-            @PathVariable
-            Long id,
-            @Valid
-            @RequestBody
-            FormationRequestDTO request
-    ) {
-
-        return formationService.updateFormation(id, request);
-    }
-
-    /**
-     * Formations d'une filière
-     */
-    @GetMapping("/filiere/{filiereId}")
-    public List<FormationResponseDTO>
-    getFormationsByFiliere(
-
-            @PathVariable
-            Long filiereId
     ) {
 
         return formationService
-                .getFormationsByFiliere(
-                        filiereId
+
+                .createFormation(
+                        request
                 );
     }
 
     /**
-     * Suppression formation
+     * Liste
+     */
+    @GetMapping
+    public List<FormationResponseDTO>
+    getAllFormations() {
+
+        return formationService
+
+                .getAllFormations();
+    }
+
+    /**
+     * Détail
+     */
+    @GetMapping("/{id}")
+    public FormationResponseDTO
+    getFormationById(
+
+            @PathVariable
+            Long id
+
+    ) {
+
+        return formationService
+
+                .getFormationById(
+                        id
+                );
+    }
+
+    /**
+     * Modification
      */
     @PreAuthorize(
-            "hasAnyRole('ADMIN', 'SUPER_ADMIN')"
+            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+    )
+    @PutMapping("/{id}")
+    public FormationResponseDTO
+    updateFormation(
+
+            @PathVariable
+            Long id,
+
+            @Valid
+            @RequestBody
+            FormationRequestDTO request
+
+    ) {
+
+        return formationService
+
+                .updateFormation(
+                        id,
+                        request
+                );
+    }
+
+    /**
+     * Suppression
+     */
+    @PreAuthorize(
+            "hasRole('ADMIN')"
     )
     @DeleteMapping("/{id}")
     public void deleteFormation(
+
             @PathVariable
             Long id
+
     ) {
-        formationService.deleteFormation(id);
+
+        formationService.deleteFormation(
+                id
+        );
     }
 }

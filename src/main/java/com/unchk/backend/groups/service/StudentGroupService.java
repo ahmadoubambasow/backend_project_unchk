@@ -217,11 +217,8 @@ public class StudentGroupService {
                         group.getFormation().getName()
                 )
 
-                .filiereId(
-                        group.getFormation().getFiliere().getId()
-                )
 
-                .filiereName(group.getFormation().getFiliere().getName())
+
 
                 .build();
     }

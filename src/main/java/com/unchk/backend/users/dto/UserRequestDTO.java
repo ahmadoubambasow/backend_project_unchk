@@ -2,6 +2,7 @@ package com.unchk.backend.users.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 /**
@@ -38,6 +39,6 @@ public class UserRequestDTO {
     /**
      * Nom du role
      */
-    @NotBlank(message = "Le role est obligatoire")
+    @NotNull(message = "Le role est obligatoire")
     private Long roleId;
 }

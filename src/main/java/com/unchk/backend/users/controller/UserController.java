@@ -66,4 +66,12 @@ public class UserController {
                 id
         );
     }
+
+    @GetMapping("/trainers")
+    public List<UserResponseDTO>
+    getAllTrainers() {
+
+        return userService
+                .getAllTrainers();
+    }
 }

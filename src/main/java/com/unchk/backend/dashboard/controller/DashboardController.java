@@ -18,12 +18,5 @@ public class DashboardController {
     /**
      * Statistiques dashboard
      */
-    @PreAuthorize(
-            "hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')"
-    )
-    @GetMapping("/stats")
-    public DashboardStatsDTO getStats() {
 
-        return dashboardService.getStats();
-    }
 }

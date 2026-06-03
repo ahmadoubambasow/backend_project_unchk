@@ -1,10 +1,9 @@
 package com.unchk.backend.formations.entity;
 
-import com.unchk.backend.filieres.entity.Filiere;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "formations")
@@ -24,43 +23,56 @@ public class Formation {
     private Long id;
 
     /**
-     * Code formation
-     */
-    @Column(nullable = false, unique = true)
-    private String code;
-
-    /**
      * Nom formation
      */
     @Column(nullable = false)
     private String name;
 
     /**
+     * Date début
+     */
+    private LocalDate startDate;
+
+    /**
+     * Date fin
+     */
+    private LocalDate endDate;
+
+    /**
+     * Type formation
+     */
+    @Enumerated(EnumType.STRING)
+    private FormationType formationType;
+
+    /**
+     * Niveau
+     */
+    @Enumerated(EnumType.STRING)
+    private FormationLevel level;
+
+    /**
+     * Financement
+     */
+    private Double fundingAmount;
+
+    /**
+     * Type financement
+     */
+    private String fundingType;
+
+    /**
+     * Nombre hommes
+     */
+    private Integer maleCount;
+
+    /**
+     * Nombre femmes
+     */
+    private Integer femaleCount;
+
+    /**
      * Description
      */
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    /**
-     * Durée ex: 06 mois
-     */
-    private Integer duration;
-
-    /**
-     * Statut formation
-     */
-    @Enumerated(EnumType.STRING)
-    private  FormationStatus status;
-
-    /**
-     * Date création
-     */
-    private LocalDateTime createdAt;
-
-    @ManyToOne
-    @JoinColumn(
-            name = "filiere_id",
-            nullable = false
-    )
-    private Filiere filiere;
 }

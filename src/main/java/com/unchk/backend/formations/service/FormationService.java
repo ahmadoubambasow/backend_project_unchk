@@ -1,96 +1,93 @@
 package com.unchk.backend.formations.service;
 
-import com.unchk.backend.filieres.entity.Filiere;
-import com.unchk.backend.filieres.repository.FiliereRepository;
 import com.unchk.backend.formations.dto.FormationRequestDTO;
 import com.unchk.backend.formations.dto.FormationResponseDTO;
+import com.unchk.backend.formations.dto.TrainerResponseDTO;
 import com.unchk.backend.formations.entity.Formation;
-import com.unchk.backend.formations.entity.FormationStatus;
 import com.unchk.backend.formations.repository.FormationRepository;
 
+import com.unchk.backend.formations.repository.FormationTrainerRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FormationService {
 
-    private final FormationRepository formationRepository;
+    private final FormationRepository
+            formationRepository;
 
-    private final FiliereRepository filiereRepository;
+    private final FormationTrainerRepository  formationTrainerRepository;
 
     /**
-     * Création formation
+     * Création
      */
     public FormationResponseDTO createFormation(
+
             FormationRequestDTO request
+
     ) {
 
-        Filiere filiere =
+        Formation formation =
 
-                filiereRepository.findById(
-                                request.getFiliereId()
+                Formation.builder()
+
+                        .name(request.getName())
+
+                        .startDate(request.getStartDate())
+
+                        .endDate(request.getEndDate())
+
+                        .formationType(
+                                request.getFormationType()
                         )
 
-                        .orElseThrow(() ->
+                        .level(
+                                request.getLevel()
+                        )
 
-                                new RuntimeException(
-                                        "Filière introuvable"
-                                )
-                        );
+                        .fundingAmount(
+                                request.getFundingAmount()
+                        )
 
-        Formation formation = Formation.builder()
+                        .fundingType(
+                                request.getFundingType()
+                        )
 
-                .code(generateCode())
+                        .maleCount(
+                                request.getMaleCount()
+                        )
 
-                .name(
-                        request.getName()
-                )
+                        .femaleCount(
+                                request.getFemaleCount()
+                        )
 
-                .description(
-                        request.getDescription()
-                )
+                        .description(
+                                request.getDescription()
+                        )
 
-                .duration(
-                        request.getDuration()
-                )
+                        .build();
 
-                .status(
-                        FormationStatus.ACTIVE
-                )
-
-                .createdAt(
-                        LocalDateTime.now()
-                )
-
-                .filiere(
-                        filiere
-                )
-
-                .build();
-
-        Formation savedFormation =
+        return mapToResponse(
 
                 formationRepository.save(
                         formation
-                );
-
-        return mapToResponse(
-                savedFormation
+                )
         );
     }
 
     /**
-     * Liste formations
+     * Liste
      */
     public List<FormationResponseDTO>
     getAllFormations() {
 
-        return formationRepository.findAll()
+        return formationRepository
+
+                .findAll()
 
                 .stream()
 
@@ -100,13 +97,11 @@ public class FormationService {
     }
 
     /**
-     * Mise à jour formation
+     * Détail
      */
-    public FormationResponseDTO updateFormation(
-
-            Long id,
-
-            FormationRequestDTO request
+    public FormationResponseDTO
+    getFormationById(
+            Long id
     ) {
 
         Formation formation =
@@ -120,16 +115,31 @@ public class FormationService {
                                 )
                         );
 
-        Filiere filiere =
+        return mapToResponse(
+                formation
+        );
+    }
 
-                filiereRepository.findById(
-                                request.getFiliereId()
-                        )
+    /**
+     * Modification
+     */
+    public FormationResponseDTO
+    updateFormation(
+
+            Long id,
+
+            FormationRequestDTO request
+
+    ) {
+
+        Formation formation =
+
+                formationRepository.findById(id)
 
                         .orElseThrow(() ->
 
                                 new RuntimeException(
-                                        "Filière introuvable"
+                                        "Formation introuvable"
                                 )
                         );
 
@@ -137,31 +147,52 @@ public class FormationService {
                 request.getName()
         );
 
+        formation.setStartDate(
+                request.getStartDate()
+        );
+
+        formation.setEndDate(
+                request.getEndDate()
+        );
+
+        formation.setFormationType(
+                request.getFormationType()
+        );
+
+        formation.setLevel(
+                request.getLevel()
+        );
+
+        formation.setFundingAmount(
+                request.getFundingAmount()
+        );
+
+        formation.setFundingType(
+                request.getFundingType()
+        );
+
+        formation.setMaleCount(
+                request.getMaleCount()
+        );
+
+        formation.setFemaleCount(
+                request.getFemaleCount()
+        );
+
         formation.setDescription(
                 request.getDescription()
         );
 
-        formation.setDuration(
-                request.getDuration()
-        );
-
-        formation.setFiliere(
-                filiere
-        );
-
-        Formation updatedFormation =
+        return mapToResponse(
 
                 formationRepository.save(
                         formation
-                );
-
-        return mapToResponse(
-                updatedFormation
+                )
         );
     }
 
     /**
-     * Suppression formation
+     * Suppression
      */
     public void deleteFormation(
             Long id
@@ -184,87 +215,104 @@ public class FormationService {
     }
 
     /**
-     * Génération code formation
+     * Mapping
      */
-    private String generateCode() {
-
-        long count =
-
-                formationRepository.count() + 1;
-
-        return String.format(
-                "FRM2026%03d",
-                count
-        );
-    }
-
-    /**
-     * Conversion Entity -> DTO
-     */
-    private FormationResponseDTO mapToResponse(
+    private FormationResponseDTO
+    mapToResponse(
             Formation formation
     ) {
 
-        return FormationResponseDTO.builder()
+        List<TrainerResponseDTO> trainers =
+
+                formationTrainerRepository
+
+                        .findByFormationId(
+                                formation.getId()
+                        )
+
+                        .stream()
+
+                        .map(link ->
+
+                                TrainerResponseDTO
+
+                                        .builder()
+
+                                        .id(
+                                                link.getTrainer().getId()
+                                        )
+
+                                        .fullName(
+                                                link.getTrainer().getFullName()
+                                        )
+
+                                        .email(
+                                                link.getTrainer().getEmail()
+                                        )
+
+                                        .role(
+                                                link.getTrainer()
+                                                        .getRole()
+                                                        .getName()
+                                        )
+
+                                        .build()
+                        )
+
+                        .toList();
+
+        return FormationResponseDTO
+
+                .builder()
 
                 .id(
                         formation.getId()
-                )
-
-                .code(
-                        formation.getCode()
                 )
 
                 .name(
                         formation.getName()
                 )
 
+                .startDate(
+                        formation.getStartDate()
+                )
+
+                .endDate(
+                        formation.getEndDate()
+                )
+
+                .formationType(
+                        formation.getFormationType()
+                )
+
+                .level(
+                        formation.getLevel()
+                )
+
+                .fundingAmount(
+                        formation.getFundingAmount()
+                )
+
+                .fundingType(
+                        formation.getFundingType()
+                )
+
+                .maleCount(
+                        formation.getMaleCount()
+                )
+
+                .femaleCount(
+                        formation.getFemaleCount()
+                )
+
                 .description(
                         formation.getDescription()
                 )
 
-                .duration(
-                        formation.getDuration()
-                )
-
-                .status(
-                        formation.getStatus()
-                )
-
-                .createdAt(
-                        formation.getCreatedAt()
-                )
-
-                .filiereId(
-                        formation.getFiliere().getId()
-                )
-
-                .filiereName(
-                        formation.getFiliere().getName()
-                )
-
-                .filiereCode(
-                        formation.getFiliere().getCode()
+                .trainers(
+                        trainers
                 )
 
                 .build();
-    }
-
-    public List<FormationResponseDTO>
-    getFormationsByFiliere(
-            Long filiereId
-    ) {
-
-        return formationRepository
-
-                .findByFiliereId(
-                        filiereId
-                )
-
-                .stream()
-
-                .map(this::mapToResponse)
-
-                .toList();
     }
 }

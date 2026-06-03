@@ -1,9 +1,12 @@
 package com.unchk.backend.formations.dto;
 
-import com.unchk.backend.formations.entity.FormationStatus;
+import com.unchk.backend.formations.entity.FormationLevel;
+import com.unchk.backend.formations.entity.FormationType;
+
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,21 +17,25 @@ public class FormationResponseDTO {
 
     private Long id;
 
-    private String code;
-
     private String name;
 
-    private  String description;
+    private LocalDate startDate;
 
-    private Integer duration;
+    private LocalDate endDate;
 
-    private FormationStatus status;
+    private FormationType formationType;
 
-    private LocalDateTime createdAt;
+    private FormationLevel level;
 
-    private Long filiereId;
+    private Double fundingAmount;
 
-    private String filiereName;
+    private String fundingType;
 
-    private String filiereCode;
+    private Integer maleCount;
+
+    private Integer femaleCount;
+
+    private String description;
+
+    private List<TrainerResponseDTO> trainers;
 }
