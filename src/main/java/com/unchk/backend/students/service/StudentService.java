@@ -5,6 +5,8 @@ import com.unchk.backend.formations.repository.FormationRepository;
 import com.unchk.backend.students.dto.StudentRequestDTO;
 import com.unchk.backend.students.dto.StudentResponseDTO;
 import com.unchk.backend.students.entity.Student;
+import com.unchk.backend.students.entity.StudentGroup;
+import com.unchk.backend.students.repository.StudentGroupRepository;
 import com.unchk.backend.students.repository.StudentRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class StudentService {
     private final FormationRepository
             formationRepository;
 
+    private final StudentGroupRepository studentGroupRepository;
+
     /**
      * Création
      */
@@ -32,6 +36,21 @@ public class StudentService {
             StudentRequestDTO request
 
     ) {
+
+        StudentGroup group =
+
+                studentGroupRepository
+
+                        .findById(
+                                request.getGroupId()
+                        )
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Groupe introuvable"
+                                )
+                        );
 
         Formation formation =
 
@@ -68,9 +87,6 @@ public class StudentService {
                                 request.getBirthDate()
                         )
 
-                        .promotion(
-                                request.getPromotion()
-                        )
 
                         .startYear(
                                 request.getStartYear()
@@ -90,6 +106,10 @@ public class StudentService {
 
                         .formation(
                                 formation
+                        )
+
+                        .group(
+                                group
                         )
 
                         .build();
@@ -187,6 +207,21 @@ public class StudentService {
 
     ) {
 
+        StudentGroup group =
+
+                studentGroupRepository
+
+                        .findById(
+                                request.getGroupId()
+                        )
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Groupe introuvable"
+                                )
+                        );
+
         Student student =
 
                 studentRepository
@@ -227,9 +262,6 @@ public class StudentService {
                 request.getBirthDate()
         );
 
-        student.setPromotion(
-                request.getPromotion()
-        );
 
         student.setStartYear(
                 request.getStartYear()
@@ -250,6 +282,8 @@ public class StudentService {
         student.setFormation(
                 formation
         );
+
+        student.setGroup(group);
 
         student = studentRepository.save(
                 student
@@ -372,6 +406,32 @@ public class StudentService {
 
                 .formationId(
                         student.getFormation().getId()
+                )
+
+                .groupId(
+
+                        student.getGroup() != null
+
+                                ?
+
+                                student.getGroup().getId()
+
+                                :
+
+                                null
+                )
+
+                .groupName(
+
+                        student.getGroup() != null
+
+                                ?
+
+                                student.getGroup().getName()
+
+                                :
+
+                                null
                 )
 
                 .build();

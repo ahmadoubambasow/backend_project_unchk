@@ -17,7 +17,7 @@ public class StudentRequestDTO {
 
     private LocalDate birthDate;
 
-    private String promotion;
+    private Long groupId;
 
     private Integer startYear;
 

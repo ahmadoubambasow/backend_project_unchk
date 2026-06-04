@@ -53,4 +53,10 @@ public class Student {
             name = "formation_id"
     )
     private Formation formation;
+
+    @ManyToOne
+    @JoinColumn(
+            name = "group_id"
+    )
+    private StudentGroup group;
 }

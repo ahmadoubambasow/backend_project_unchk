@@ -1,7 +1,9 @@
-package com.unchk.backend.groups.entity;
+package com.unchk.backend.students.entity;
 
 import com.unchk.backend.formations.entity.Formation;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 
 @Entity
@@ -14,36 +16,21 @@ import lombok.*;
 @Builder
 public class StudentGroup {
 
-    /**
-     * ID
-     */
     @Id
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
     private Long id;
 
-    /**
-     * Nom groupe
-     * Ex:
-     * L1-A
-     * L1-B
-     */
-    @Column(nullable = false)
     private String name;
 
-    /**
-     * Capacité groupe
-     */
-    private Integer capacity;
+    private String promotion;
 
-    /**
-     * Formation associée
-     */
+    private Integer academicYear;
+
     @ManyToOne
     @JoinColumn(
-            name = "formation_id",
-            nullable = false
+            name = "formation_id"
     )
     private Formation formation;
 }

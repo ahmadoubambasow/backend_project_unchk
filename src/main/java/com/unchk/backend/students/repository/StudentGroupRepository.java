@@ -1,6 +1,6 @@
-package com.unchk.backend.groups.repository;
+package com.unchk.backend.students.repository;
 
-import com.unchk.backend.groups.entity.StudentGroup;
+import com.unchk.backend.students.entity.StudentGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -8,10 +8,8 @@ import java.util.List;
 public interface StudentGroupRepository
         extends JpaRepository<StudentGroup, Long> {
 
-    /**
-     * Groupes d'une formation.
-     */
-    List<StudentGroup> findByFormationId(
+    List<StudentGroup>
+    findByFormationId(
             Long formationId
     );
 }

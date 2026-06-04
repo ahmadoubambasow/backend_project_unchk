@@ -34,4 +34,8 @@ public class StudentResponseDTO {
     private Long formationId;
 
     private String formationName;
+
+    private Long groupId;
+
+    private String groupName;
 }
