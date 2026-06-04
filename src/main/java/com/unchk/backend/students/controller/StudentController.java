@@ -111,4 +111,22 @@ public class StudentController {
                 id
         );
     }
+
+    @GetMapping(
+            "/group/{groupId}"
+    )
+    public List<StudentResponseDTO>
+    getStudentsByGroup(
+
+            @PathVariable
+            Long groupId
+
+    ) {
+
+        return studentService
+
+                .getStudentsByGroup(
+                        groupId
+                );
+    }
 }

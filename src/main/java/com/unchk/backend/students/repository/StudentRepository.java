@@ -26,4 +26,9 @@ public interface StudentRepository
     long countByStartYear(
             Integer startYear
     );
+
+    List<Student>
+    findByGroupId(
+            Long groupId
+    );
 }

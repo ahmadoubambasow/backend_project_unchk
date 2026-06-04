@@ -170,6 +170,28 @@ public class StudentService {
         );
     }
 
+    public List<StudentResponseDTO>
+    getStudentsByGroup(
+
+            Long groupId
+
+    ) {
+
+        return studentRepository
+
+                .findByGroupId(
+                        groupId
+                )
+
+                .stream()
+
+                .map(
+                        this::mapToResponse
+                )
+
+                .toList();
+    }
+
     /**
      * Liste par formation
      */
