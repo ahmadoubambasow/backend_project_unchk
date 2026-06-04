@@ -38,4 +38,6 @@ public class StudentResponseDTO {
     private Long groupId;
 
     private String groupName;
+
+
 }

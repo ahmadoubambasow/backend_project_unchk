@@ -456,6 +456,12 @@ public class StudentService {
                                 null
                 )
 
+                .promotion(
+                        student.getGroup() != null
+                            ? student.getGroup().getPromotion()
+                                : null
+                )
+
                 .build();
     }
 }

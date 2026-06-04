@@ -302,6 +302,10 @@ public class StudentGroupService {
                         group.getAcademicYear()
                 )
 
+                .formationId(
+                        group.getFormation().getId()
+                )
+
                 .formationName(
                         group.getFormation()
                                 .getName()

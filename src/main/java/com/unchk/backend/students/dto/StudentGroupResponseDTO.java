@@ -19,4 +19,6 @@ public class StudentGroupResponseDTO {
     private String formationName;
 
     private Integer studentCount;
+
+    private Long formationId;
 }
