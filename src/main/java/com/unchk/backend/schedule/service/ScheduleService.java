@@ -13,6 +13,7 @@ import com.unchk.backend.users.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -555,6 +556,121 @@ public class ScheduleService {
                 );
             }
         }
+    }
+
+    public List<ScheduleResponseDTO>
+    getMySchedules() {
+
+        String email =
+
+                SecurityContextHolder
+
+                        .getContext()
+
+                        .getAuthentication()
+
+                        .getName();
+
+        System.out.println(
+                "\n========== MY SCHEDULE =========="
+        );
+
+        System.out.println(
+                "EMAIL CONNECTE = " + email
+        );
+
+        User user =
+
+                userRepository
+
+                        .findByEmail(email)
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Utilisateur introuvable"
+                                )
+                        );
+
+        String role =
+
+                user.getRole()
+                        .getName();
+
+        System.out.println(
+                "USER ID = " + user.getId()
+        );
+
+        System.out.println(
+                "ROLE = " + role
+        );
+
+        if (
+
+                role.equals("ADMIN")
+
+                        ||
+
+                        role.equals("RESPONSABLE_FORMATION")
+
+        ) {
+
+            System.out.println(
+                    "ADMIN/RESPONSABLE -> TOUS LES CRENEAUX"
+            );
+
+            return getAllSchedules();
+        }
+
+        List<Schedule> schedules =
+
+                scheduleRepository
+
+                        .findByTrainerId(
+                                user.getId()
+                        );
+
+        System.out.println(
+                "NB SCHEDULES TROUVES = "
+                        + schedules.size()
+        );
+
+        for (Schedule schedule : schedules) {
+
+            System.out.println(
+                    "SCHEDULE ID = "
+                            + schedule.getId()
+            );
+
+            System.out.println(
+                    "TRAINER ID = "
+                            + schedule.getTrainer().getId()
+            );
+
+            System.out.println(
+                    "TRAINER NAME = "
+                            + schedule.getTrainer().getFullName()
+            );
+
+            System.out.println(
+                    "MODULE = "
+                            + schedule.getTrainingModule().getTitle()
+            );
+
+            System.out.println(
+                    "--------------------"
+            );
+        }
+
+        return schedules
+
+                .stream()
+
+                .map(
+                        this::mapToResponse
+                )
+
+                .toList();
     }
 
     /**

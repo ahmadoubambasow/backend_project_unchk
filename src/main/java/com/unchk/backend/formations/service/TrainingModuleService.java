@@ -23,6 +23,20 @@ public class TrainingModuleService {
     private final FormationRepository
             formationRepository;
 
+    public List<TrainingModuleResponseDTO>
+    getAllModules() {
+
+        return trainingModuleRepository
+
+                .findAll()
+
+                .stream()
+
+                .map(this::mapToResponse)
+
+                .toList();
+    }
+
     /**
      * Création module
      */

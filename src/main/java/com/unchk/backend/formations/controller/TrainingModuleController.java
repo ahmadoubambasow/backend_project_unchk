@@ -16,6 +16,13 @@ public class TrainingModuleController {
     private final TrainingModuleService
             service;
 
+    @GetMapping
+    public List<TrainingModuleResponseDTO>
+    getAllModules() {
+
+        return service.getAllModules();
+    }
+
     @PostMapping
     public TrainingModuleResponseDTO
     createModule(

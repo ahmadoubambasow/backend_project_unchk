@@ -38,6 +38,14 @@ public class ScheduleController {
         );
     }
 
+    @GetMapping("/my-schedule")
+    public List<ScheduleResponseDTO>
+    getMySchedules() {
+
+        return scheduleService
+                .getMySchedules();
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize(
             "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
