@@ -67,7 +67,8 @@ public class FormationTrainerService {
         String role =
 
                 trainer.getRole()
-                        .getName();
+                        .getName()
+                        .name();
 
         boolean allowed =
 
@@ -164,6 +165,7 @@ public class FormationTrainerService {
                                         link.getTrainer()
                                                 .getRole()
                                                 .getName()
+                                                .name()
                                 )
 
                                 .build()

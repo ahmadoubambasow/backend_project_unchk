@@ -52,7 +52,7 @@ public class AuthService {
                 .token(token)
                 .fullName(user.getFullName())
                 .email(user.getEmail())
-                .role(user.getRole().getName())
+                .role(user.getRole().getName().name())
                 .build();
     }
 

@@ -1,7 +1,9 @@
 package com.unchk.backend.students.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import com.unchk.backend.formations.entity.Formation;
 
+import com.unchk.backend.users.entity.User;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Student {
+public class Student extends BaseEntity {
 
     @Id
     @GeneratedValue(
@@ -59,4 +61,8 @@ public class Student {
             name = "group_id"
     )
     private StudentGroup group;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

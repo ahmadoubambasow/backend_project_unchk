@@ -1,5 +1,6 @@
 package com.unchk.backend.administration.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import com.unchk.backend.users.entity.User;
 
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdministrativeDocument {
+public class AdministrativeDocument extends BaseEntity {
 
     @Id
     @GeneratedValue(
@@ -61,4 +62,6 @@ public class AdministrativeDocument {
     private String description;
 
     private String filePath;
+
+
 }

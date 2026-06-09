@@ -255,7 +255,8 @@ public class FormationService {
                                         .role(
                                                 link.getTrainer()
                                                         .getRole()
-                                                        .getName()
+                                                        .getName().name()
+
                                         )
 
                                         .build()

@@ -1,6 +1,7 @@
 package com.unchk.backend.users.config;
 
 import com.unchk.backend.users.entity.Role;
+import com.unchk.backend.users.entity.UserRole;
 import com.unchk.backend.users.repository.RoleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,25 +22,14 @@ public class RoleInitializer
             String... args
     ) {
 
-        createRole("ADMIN");
+        for (UserRole role: UserRole.values()) {
 
-        createRole("ADMINISTRATIF");
-
-        createRole("ENSEIGNANT");
-
-        createRole("ENSEIGNANT_ASSOCIE");
-
-        createRole("RESPONSABLE_FORMATION");
-
-        createRole("TUTEUR");
-
-        createRole("APPUI_INSERTION");
-
-        createRole("ETUDIANT");
+            createRole(role);
+        }
     }
 
     private void createRole(
-            String roleName
+            UserRole roleName
     ) {
 
         if (

@@ -1,5 +1,6 @@
 package com.unchk.backend.students.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import com.unchk.backend.formations.entity.Formation;
 
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StudentGroup {
+public class StudentGroup extends BaseEntity {
 
     @Id
     @GeneratedValue(

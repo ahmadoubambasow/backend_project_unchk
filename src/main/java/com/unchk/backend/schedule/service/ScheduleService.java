@@ -595,7 +595,7 @@ public class ScheduleService {
         String role =
 
                 user.getRole()
-                        .getName();
+                        .getName().name();
 
         System.out.println(
                 "USER ID = " + user.getId()

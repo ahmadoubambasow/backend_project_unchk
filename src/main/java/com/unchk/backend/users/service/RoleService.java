@@ -30,7 +30,7 @@ public class RoleService {
 
                                 .id(role.getId())
 
-                                .name(role.getName())
+                                .name(role.getName().name())
 
                                 .build()
                 )

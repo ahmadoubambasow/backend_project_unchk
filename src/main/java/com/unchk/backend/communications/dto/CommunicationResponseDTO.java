@@ -4,6 +4,7 @@ import com.unchk.backend.communications.entity.CommunicationAccessRole;
 import com.unchk.backend.communications.entity.CommunicationType;
 
 import com.unchk.backend.communications.entity.DocumentAccessRole;
+import com.unchk.backend.users.entity.UserRole;
 import lombok.*;
 
 @Getter
@@ -31,7 +32,7 @@ public class CommunicationResponseDTO {
 
     private String documentType;
 
-    private CommunicationAccessRole accessRole;
+    private UserRole accessRole;
 
     private String createdAt;
 }

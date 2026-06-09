@@ -11,6 +11,7 @@ import com.unchk.backend.notifications.entity.UserNotification;
 import com.unchk.backend.notifications.repository.NotificationRepository;
 import com.unchk.backend.notifications.repository.UserNotificationRepository;
 import com.unchk.backend.users.entity.User;
+import com.unchk.backend.users.entity.UserRole;
 import com.unchk.backend.users.repository.UserRepository;
 
 import org.springframework.security.core.Authentication;
@@ -35,6 +36,7 @@ public class CommunicationService {
     private final UserNotificationRepository userNotificationRepository;
 
     private final UserRepository userRepository;
+
     /**
      * Création
      */
@@ -96,7 +98,6 @@ public class CommunicationService {
                         communication
                 );
 
-
         Notification savedNotification =
 
                 notificationRepository.save(
@@ -127,7 +128,7 @@ public class CommunicationService {
         if (
 
                 savedCommunication.getAccessRole()
-                        == CommunicationAccessRole.ALL
+                        == UserRole.ALL
 
         ) {
 
@@ -137,9 +138,7 @@ public class CommunicationService {
 
             users = userRepository.findByRole_Name(
 
-                    savedCommunication
-                            .getAccessRole()
-                            .name()
+                    savedCommunication.getAccessRole()
             );
         }
 
@@ -159,13 +158,17 @@ public class CommunicationService {
 
                     UserNotification.builder()
 
-                            .user(user)
+                            .user(
+                                    user
+                            )
 
                             .notification(
                                     savedNotification
                             )
 
-                            .isRead(false)
+                            .isRead(
+                                    false
+                            )
 
                             .build();
 
@@ -287,22 +290,39 @@ public class CommunicationService {
         );
     }
 
+    /**
+     * Archives
+     */
     public List<CommunicationResponseDTO> getArchives() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
 
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("Utilisateur introuvable")
-                        );
 
-        String role = user.getRole().getName();
+                .orElseThrow(() ->
+
+                        new RuntimeException(
+                                "Utilisateur introuvable"
+                        )
+                );
+
+        UserRole role =
+
+                user.getRole()
+                        .getName();
 
         List<Communication> communications;
 
-        if ("ADMIN".equals(role)) {
+        if (
+
+                role == UserRole.ADMIN
+
+        ) {
 
             communications =
 
@@ -310,21 +330,15 @@ public class CommunicationService {
 
         } else {
 
-            CommunicationAccessRole accessRole =
-
-                    CommunicationAccessRole.valueOf(
-                            role
-                    );
-
             communications =
 
                     communicationRepository.findByAccessRoleIn(
 
                             Arrays.asList(
 
-                                    accessRole,
+                                    role,
 
-                                    CommunicationAccessRole.ALL
+                                    UserRole.ALL
                             )
                     );
         }
@@ -409,3 +423,4 @@ public class CommunicationService {
                 .build();
     }
 }
+

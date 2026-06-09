@@ -341,6 +341,7 @@ public class PersonnelFileService {
                         personnelFile.getUser()
                                 .getRole()
                                 .getName()
+                                .name()
                 )
 
                 .employeeNumber(

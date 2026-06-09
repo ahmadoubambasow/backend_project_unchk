@@ -1,5 +1,6 @@
 package com.unchk.backend.formations.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Formation {
+public class Formation extends BaseEntity {
 
     /**
      * ID formation

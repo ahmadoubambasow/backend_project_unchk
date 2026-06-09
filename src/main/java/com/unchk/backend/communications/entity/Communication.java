@@ -1,5 +1,6 @@
 package com.unchk.backend.communications.entity;
 
+import com.unchk.backend.users.entity.UserRole;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -75,5 +76,5 @@ public class Communication {
      * Rôle autorisé
      */
     @Enumerated(EnumType.STRING)
-    private CommunicationAccessRole accessRole;
+    private UserRole accessRole;
 }

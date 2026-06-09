@@ -1,5 +1,6 @@
 package com.unchk.backend.promotions.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Promotion {
+public class Promotion extends BaseEntity {
 
     /**
      * ID

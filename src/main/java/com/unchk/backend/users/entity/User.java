@@ -1,5 +1,6 @@
 package com.unchk.backend.users.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends BaseEntity {
 
     /**
      * Identifiant unique utilisateur

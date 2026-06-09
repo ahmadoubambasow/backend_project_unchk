@@ -4,6 +4,7 @@ import com.unchk.backend.users.dto.UserRequestDTO;
 import com.unchk.backend.users.dto.UserResponseDTO;
 import com.unchk.backend.users.entity.Role;
 import com.unchk.backend.users.entity.User;
+import com.unchk.backend.users.entity.UserRole;
 import com.unchk.backend.users.repository.RoleRepository;
 import com.unchk.backend.users.repository.UserRepository;
 
@@ -198,13 +199,11 @@ public class UserService {
      */
     public List<UserResponseDTO> getAllTrainers() {
 
-        List<String> trainerRoles = List.of(
+        List<UserRole> trainerRoles = List.of(
 
-                "ENSEIGNANT",
-
-                "ENSEIGNANT_ASSOCIE",
-
-                "TUTEUR"
+                UserRole.ENSEIGNANT,
+                UserRole.ENSEIGNANT_ASSOCIE,
+                UserRole.TUTEUR
         );
 
         return userRepository
@@ -248,7 +247,7 @@ public class UserService {
                 )
 
                 .roleName(
-                        user.getRole().getName()
+                        user.getRole().getName().name()
                 )
 
                 .build();

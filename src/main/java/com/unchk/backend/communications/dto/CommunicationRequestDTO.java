@@ -4,6 +4,7 @@ import com.unchk.backend.communications.entity.CommunicationAccessRole;
 import com.unchk.backend.communications.entity.CommunicationType;
 
 import com.unchk.backend.communications.entity.DocumentAccessRole;
+import com.unchk.backend.users.entity.UserRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -35,5 +36,5 @@ public class CommunicationRequestDTO {
 
     private String documentType;
 
-    private CommunicationAccessRole accessRole;
+    private UserRole accessRole;
 }

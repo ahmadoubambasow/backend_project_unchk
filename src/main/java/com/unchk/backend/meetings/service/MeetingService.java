@@ -347,7 +347,7 @@ public class MeetingService {
         String role =
 
                 user.getRole()
-                        .getName();
+                        .getName().name();
 
         if (
 

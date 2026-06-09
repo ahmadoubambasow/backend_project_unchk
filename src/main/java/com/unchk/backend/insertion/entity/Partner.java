@@ -1,5 +1,6 @@
 package com.unchk.backend.insertion.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -12,7 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Partner {
+public class Partner extends BaseEntity {
 
     @Id
     @GeneratedValue(

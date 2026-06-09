@@ -1,5 +1,6 @@
 package com.unchk.backend.insertion.entity;
 
+import com.unchk.backend.common.entity.BaseEntity;
 import com.unchk.backend.students.entity.Student;
 
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Internship {
+public class Internship extends BaseEntity {
 
     @Id
     @GeneratedValue(
