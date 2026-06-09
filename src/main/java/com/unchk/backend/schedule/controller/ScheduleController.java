@@ -11,20 +11,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST de gestion des emplois du temps.
+ */
 @RestController
 @RequestMapping("/api/schedules")
 @RequiredArgsConstructor
 public class ScheduleController {
 
-    private final ScheduleService
-            scheduleService;
+    private final ScheduleService scheduleService;
 
     /**
-     * Création créneau
+     * Création d'un créneau d'emploi du temps.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
      */
     @PostMapping
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
     public ScheduleResponseDTO createSchedule(
 
@@ -38,17 +47,33 @@ public class ScheduleController {
         );
     }
 
+    /**
+     * Emploi du temps de l'utilisateur connecté.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés.
+     */
     @GetMapping("/my-schedule")
+    @PreAuthorize("isAuthenticated()")
     public List<ScheduleResponseDTO>
     getMySchedules() {
 
-        return scheduleService
-                .getMySchedules();
+        return scheduleService.getMySchedules();
     }
 
+    /**
+     * Modification d'un créneau.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
+     */
     @PutMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
     public ScheduleResponseDTO
     updateSchedule(
@@ -62,26 +87,48 @@ public class ScheduleController {
     ) {
 
         return scheduleService.updateSchedule(
+
                 id,
+
                 request
         );
     }
 
     /**
-     * Liste complète
+     * Liste complète des emplois du temps.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - RESPONSABLE_FORMATION
      */
     @GetMapping
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
+    )
     public List<ScheduleResponseDTO>
     getAllSchedules() {
 
-        return scheduleService
-                .getAllSchedules();
+        return scheduleService.getAllSchedules();
     }
 
     /**
-     * Détail créneau
+     * Consultation d'un créneau.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés.
+     *
+     * Remarque :
+     * Le service doit vérifier que l'utilisateur
+     * est concerné par le créneau (étudiant du groupe,
+     * enseignant affecté, ou gestionnaire).
      */
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ScheduleResponseDTO
     getScheduleById(
 
@@ -90,14 +137,24 @@ public class ScheduleController {
 
     ) {
 
-        return scheduleService
-                .getScheduleById(id);
+        return scheduleService.getScheduleById(
+                id
+        );
     }
 
     /**
-     * EDT Groupe
+     * Emploi du temps d'un groupe.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés.
+     *
+     * Remarque :
+     * Le service peut restreindre l'accès
+     * aux étudiants appartenant au groupe
+     * et aux responsables concernés.
      */
     @GetMapping("/group/{groupId}")
+    @PreAuthorize("isAuthenticated()")
     public List<ScheduleResponseDTO>
     getGroupSchedules(
 
@@ -106,16 +163,26 @@ public class ScheduleController {
 
     ) {
 
-        return scheduleService
-                .getGroupSchedules(
-                        groupId
-                );
+        return scheduleService.getGroupSchedules(
+                groupId
+        );
     }
 
     /**
-     * EDT Formateur
+     * Emploi du temps d'un formateur.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - RESPONSABLE_FORMATION
+     * - ENSEIGNANT concerné
+     *
+     * Remarque :
+     * Le service doit empêcher un enseignant
+     * d'accéder aux emplois du temps d'autres enseignants.
      */
     @GetMapping("/trainer/{trainerId}")
+    @PreAuthorize("isAuthenticated()")
     public List<ScheduleResponseDTO>
     getTrainerSchedules(
 
@@ -124,18 +191,20 @@ public class ScheduleController {
 
     ) {
 
-        return scheduleService
-                .getTrainerSchedules(
-                        trainerId
-                );
+        return scheduleService.getTrainerSchedules(
+                trainerId
+        );
     }
 
     /**
-     * Suppression
+     * Suppression d'un créneau.
+     *
+     * Autorisés :
+     * - ADMIN uniquement
      */
     @DeleteMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasRole('ADMIN')"
     )
     public void deleteSchedule(
 

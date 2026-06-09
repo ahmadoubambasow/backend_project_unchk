@@ -7,25 +7,37 @@ import com.unchk.backend.students.service.StudentService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST de gestion des étudiants.
+ */
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
 public class StudentController {
 
-    private final StudentService
-            studentService;
+    private final StudentService studentService;
 
+    /**
+     * Création d'un étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     */
     @PostMapping
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
-    public StudentResponseDTO
-    createStudent(
+    public StudentResponseDTO createStudent(
 
             @RequestBody
             StudentRequestDTO request
@@ -37,28 +49,85 @@ public class StudentController {
         );
     }
 
+    /**
+     * Liste complète des étudiants.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     * - ENSEIGNANT
+     * - TUTEUR
+     */
     @GetMapping
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'," +
+                    "'ENSEIGNANT'," +
+                    "'TUTEUR'" +
+                    ")"
+    )
     public List<StudentResponseDTO>
     getAllStudents() {
 
         return studentService.getAllStudents();
     }
 
+    /**
+     * Consultation du détail d'un étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     * - ENSEIGNANT
+     * - TUTEUR
+     * - ETUDIANT (son propre dossier uniquement)
+     *
+     * Remarque :
+     * Le service doit empêcher un étudiant
+     * d'accéder au dossier d'un autre étudiant.
+     */
     @GetMapping("/{id}")
-    public StudentResponseDTO
-    getStudentById(
+    @PreAuthorize("isAuthenticated()")
+    public StudentResponseDTO getStudentById(
 
             @PathVariable
             Long id
 
     ) {
 
-        return studentService
-                .getStudentById(id);
+        return studentService.getStudentById(
+                id
+        );
     }
 
-    @GetMapping(
-            "/formation/{formationId}"
+    /**
+     * Liste des étudiants d'une formation.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     * - ENSEIGNANT
+     * - TUTEUR
+     */
+    @GetMapping("/formation/{formationId}")
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'," +
+                    "'ENSEIGNANT'," +
+                    "'TUTEUR'" +
+                    ")"
     )
     public List<StudentResponseDTO>
     getStudentsByFormation(
@@ -68,19 +137,28 @@ public class StudentController {
 
     ) {
 
-        return studentService
-
-                .getStudentsByFormation(
-                        formationId
-                );
+        return studentService.getStudentsByFormation(
+                formationId
+        );
     }
 
+    /**
+     * Modification d'un étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     */
     @PutMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
-    public StudentResponseDTO
-    updateStudent(
+    public StudentResponseDTO updateStudent(
 
             @PathVariable
             Long id,
@@ -91,11 +169,19 @@ public class StudentController {
     ) {
 
         return studentService.updateStudent(
+
                 id,
+
                 request
         );
     }
 
+    /**
+     * Suppression d'un étudiant.
+     *
+     * Autorisés :
+     * - ADMIN uniquement
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize(
             "hasRole('ADMIN')"
@@ -112,8 +198,27 @@ public class StudentController {
         );
     }
 
-    @GetMapping(
-            "/group/{groupId}"
+    /**
+     * Liste des étudiants d'un groupe.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     * - ENSEIGNANT
+     * - TUTEUR
+     */
+    @GetMapping("/group/{groupId}")
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'," +
+                    "'ENSEIGNANT'," +
+                    "'TUTEUR'" +
+                    ")"
     )
     public List<StudentResponseDTO>
     getStudentsByGroup(
@@ -123,10 +228,8 @@ public class StudentController {
 
     ) {
 
-        return studentService
-
-                .getStudentsByGroup(
-                        groupId
-                );
+        return studentService.getStudentsByGroup(
+                groupId
+        );
     }
 }

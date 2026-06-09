@@ -6,21 +6,36 @@ import com.unchk.backend.insertion.service.StudentContactService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST de gestion des contacts étudiants.
+ */
 @RestController
 @RequestMapping("/api/student-contacts")
 @RequiredArgsConstructor
 public class StudentContactController {
 
-    private final StudentContactService
-            service;
+    private final StudentContactService service;
 
     /**
-     * Création
+     * Création d'un contact étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - INSERTION
+     * - APPUI_INSERTION
      */
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'INSERTION'," +
+                    "'APPUI_INSERTION'" +
+                    ")"
+    )
     @PostMapping
     public StudentContactResponseDTO create(
 
@@ -35,21 +50,51 @@ public class StudentContactController {
     }
 
     /**
-     * Liste complète
+     * Liste complète des contacts étudiants.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - INSERTION
+     * - APPUI_INSERTION
+     * - RESPONSABLE_FORMATION
      */
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'INSERTION'," +
+                    "'APPUI_INSERTION'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
+    )
     @GetMapping
-    public List<StudentContactResponseDTO>
-    getAll() {
+    public List<StudentContactResponseDTO> getAll() {
 
         return service.getAll();
     }
 
     /**
-     * Détail
+     * Consultation du détail d'un contact étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - INSERTION
+     * - APPUI_INSERTION
+     * - RESPONSABLE_FORMATION
      */
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'INSERTION'," +
+                    "'APPUI_INSERTION'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
+    )
     @GetMapping("/{id}")
-    public StudentContactResponseDTO
-    getById(
+    public StudentContactResponseDTO getById(
 
             @PathVariable
             Long id
@@ -62,8 +107,24 @@ public class StudentContactController {
     }
 
     /**
-     * Contacts d'un étudiant
+     * Consultation des contacts d'un étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - INSERTION
+     * - APPUI_INSERTION
+     * - RESPONSABLE_FORMATION
      */
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'INSERTION'," +
+                    "'APPUI_INSERTION'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
+    )
     @GetMapping("/student/{studentId}")
     public List<StudentContactResponseDTO>
     getStudentContacts(
@@ -79,8 +140,20 @@ public class StudentContactController {
     }
 
     /**
-     * Modification
+     * Modification d'un contact étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - INSERTION
+     * - APPUI_INSERTION
      */
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'INSERTION'," +
+                    "'APPUI_INSERTION'" +
+                    ")"
+    )
     @PutMapping("/{id}")
     public StudentContactResponseDTO update(
 
@@ -99,8 +172,14 @@ public class StudentContactController {
     }
 
     /**
-     * Suppression
+     * Suppression d'un contact étudiant.
+     *
+     * Autorisés :
+     * - ADMIN uniquement
      */
+    @PreAuthorize(
+            "hasRole('ADMIN')"
+    )
     @DeleteMapping("/{id}")
     public void delete(
 
@@ -109,6 +188,8 @@ public class StudentContactController {
 
     ) {
 
-        service.delete(id);
+        service.delete(
+                id
+        );
     }
 }

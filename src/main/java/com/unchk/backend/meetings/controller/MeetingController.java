@@ -11,20 +11,33 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST de gestion des réunions.
+ */
 @RestController
 @RequestMapping("/api/meetings")
 @RequiredArgsConstructor
 public class MeetingController {
 
-    private final MeetingService
-            meetingService;
+    private final MeetingService meetingService;
 
     /**
-     * Création réunion
+     * Création d'une réunion.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - RESPONSABLE_FORMATION
+     * - SECRETAIRE
      */
     @PostMapping
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'RESPONSABLE_FORMATION'," +
+                    "'SECRETAIRE'" +
+                    ")"
     )
     public MeetingResponseDTO createMeeting(
 
@@ -39,34 +52,56 @@ public class MeetingController {
     }
 
     /**
-     * Liste complète
+     * Liste complète des réunions.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - RESPONSABLE_FORMATION
+     * - SECRETAIRE
      */
     @GetMapping
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'RESPONSABLE_FORMATION'," +
+                    "'SECRETAIRE'" +
+                    ")"
     )
     public List<MeetingResponseDTO>
     getAllMeetings() {
 
-        return meetingService
-                .getAllMeetings();
+        return meetingService.getAllMeetings();
     }
 
     /**
-     * Réunions utilisateur connecté
+     * Réunions de l'utilisateur connecté.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés.
      */
     @GetMapping("/my-meetings")
+    @PreAuthorize("isAuthenticated()")
     public List<MeetingResponseDTO>
     getMyMeetings() {
 
-        return meetingService
-                .getMyMeetings();
+        return meetingService.getMyMeetings();
     }
 
     /**
-     * Détail réunion
+     * Détail d'une réunion.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés.
+     *
+     * Remarque :
+     * Le service doit vérifier que l'utilisateur
+     * connecté est effectivement participant à
+     * la réunion ou dispose d'un rôle de gestion.
      */
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public MeetingResponseDTO
     getMeetingById(
 
@@ -75,16 +110,28 @@ public class MeetingController {
 
     ) {
 
-        return meetingService
-                .getMeetingById(id);
+        return meetingService.getMeetingById(
+                id
+        );
     }
 
     /**
-     * Modification
+     * Modification d'une réunion.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - RESPONSABLE_FORMATION
+     * - SECRETAIRE
      */
     @PutMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'RESPONSABLE_FORMATION'," +
+                    "'SECRETAIRE'" +
+                    ")"
     )
     public MeetingResponseDTO
     updateMeeting(
@@ -106,11 +153,18 @@ public class MeetingController {
     }
 
     /**
-     * Suppression
+     * Suppression d'une réunion.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
      */
     @DeleteMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'" +
+                    ")"
     )
     public void deleteMeeting(
 

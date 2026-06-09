@@ -14,18 +14,32 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller REST de gestion des dossiers étudiants.
+ */
 @RestController
 @RequestMapping("/api/student-files")
 @RequiredArgsConstructor
 public class StudentFileController {
 
-    private final StudentFileService
-            service;
+    private final StudentFileService service;
 
-    @PostMapping
+    /**
+     * Création d'un dossier étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
+    @PostMapping
     public StudentFileResponseDTO create(
 
             @RequestBody
@@ -38,36 +52,79 @@ public class StudentFileController {
         );
     }
 
-    @GetMapping
+    /**
+     * Liste des dossiers étudiants.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
-    public List<StudentFileResponseDTO>
-    getAll() {
+    @GetMapping
+    public List<StudentFileResponseDTO> getAll() {
 
         return service.getAll();
     }
 
-    @GetMapping("/{id}")
+    /**
+     * Consultation d'un dossier étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
+    @GetMapping("/{id}")
     public StudentFileResponseDTO getById(
 
-            @PathVariable Long id
+            @PathVariable
+            Long id
 
     ) {
 
-        return service.getById(id);
+        return service.getById(
+                id
+        );
     }
 
-    @PutMapping("/{id}")
+    /**
+     * Modification d'un dossier étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
+    @PutMapping("/{id}")
     public StudentFileResponseDTO update(
 
-            @PathVariable Long id,
+            @PathVariable
+            Long id,
 
             @RequestBody
             StudentFileRequestDTO request
@@ -80,23 +137,44 @@ public class StudentFileController {
         );
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Suppression d'un dossier étudiant.
+     *
+     * Autorisés :
+     * - ADMIN uniquement
+     */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasRole('ADMIN')"
     )
+    @DeleteMapping("/{id}")
     public void delete(
 
-            @PathVariable Long id
+            @PathVariable
+            Long id
 
     ) {
 
-        service.delete(id);
+        service.delete(
+                id
+        );
     }
 
-    @PostMapping("/upload")
+    /**
+     * Téléversement d'un document lié au dossier étudiant.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - ADMINISTRATIF
+     * - RESPONSABLE_FORMATION
+     */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'ADMINISTRATIF'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
+    @PostMapping("/upload")
     public ResponseEntity<Map<String, String>>
     uploadDocument(
 
