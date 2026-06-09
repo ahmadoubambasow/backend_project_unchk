@@ -26,6 +26,19 @@ public class AdministrativeDocumentController {
     private final DocumentStorageService documentStorageService;
 
 
+    /**
+     * Créer document administrative
+     * @param request
+     * @return
+     */
+
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'SECRETAIRE'," +
+                    "'ADMINISTRATIF'" +
+                    ")"
+    )
     @PostMapping
     public AdministrativeDocumentResponseDTO create(
 
@@ -40,6 +53,19 @@ public class AdministrativeDocumentController {
         );
     }
 
+
+    /**
+     * Retourner la liste des dccuments
+     * @return
+     */
+
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'SECRETAIRE'," +
+                    "'ADMINISTRATIF'" +
+                    ")"
+    )
     @GetMapping
     public List<AdministrativeDocumentResponseDTO>
     getAll() {
@@ -47,6 +73,20 @@ public class AdministrativeDocumentController {
         return service.getAll();
     }
 
+    /**
+     * Documents par ID
+     * @param id
+     * @return
+     */
+
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'SECRETAIRE'," +
+                    "'ADMINISTRATIF'" +
+                    ")"
+    )
     @GetMapping("/{id}")
     public AdministrativeDocumentResponseDTO getById(
 
@@ -58,6 +98,21 @@ public class AdministrativeDocumentController {
         return service.getById(id);
     }
 
+
+    /**
+     * Modifier document
+     * @param id
+     * @param request
+     * @return
+     */
+
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'SECRETAIRE'," +
+                    "'ADMINISTRATIF'" +
+                    ")"
+    )
     @PutMapping("/{id}")
     public AdministrativeDocumentResponseDTO update(
 
@@ -75,6 +130,13 @@ public class AdministrativeDocumentController {
         );
     }
 
+
+    /**
+     * Supprimer document
+     * @param id
+     */
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void delete(
 
@@ -86,7 +148,21 @@ public class AdministrativeDocumentController {
         service.delete(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
+    /**
+     * Upload document
+     * @param file
+     * @return
+     * @throws IOException
+     */
+
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'SECRETAIRE'," +
+                    "'ADMINISTRATIF'" +
+                    ")"
+    )
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>>
     uploadDocument(
@@ -106,6 +182,12 @@ public class AdministrativeDocumentController {
         );
     }
 
+
+    /**
+     * Document de l'utilisateur connecté
+     * @return
+     */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-documents")
     public List<AdministrativeDocumentResponseDTO>
     getMyDocuments() {

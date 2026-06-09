@@ -9,30 +9,32 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST de gestion des formations
+ */
 @RestController
 @RequestMapping("/api/formations")
 @RequiredArgsConstructor
 public class FormationController {
 
-    private final FormationService
-            formationService;
+    private final FormationService formationService;
 
     /**
-     * Création
+     * Création d'une formation
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
      */
     @PreAuthorize(
             "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
     )
     @PostMapping
-    public FormationResponseDTO
-    createFormation(
+    public FormationResponseDTO createFormation(
 
             @Valid
             @RequestBody
@@ -40,53 +42,56 @@ public class FormationController {
 
     ) {
 
-        return formationService
-
-                .createFormation(
-                        request
-                );
+        return formationService.createFormation(
+                request
+        );
     }
 
     /**
-     * Liste
+     * Liste des formations
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public List<FormationResponseDTO>
-    getAllFormations() {
+    public List<FormationResponseDTO> getAllFormations() {
 
-        return formationService
-
-                .getAllFormations();
+        return formationService.getAllFormations();
     }
 
     /**
-     * Détail
+     * Détail d'une formation
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
-    public FormationResponseDTO
-    getFormationById(
+    public FormationResponseDTO getFormationById(
 
             @PathVariable
             Long id
 
     ) {
 
-        return formationService
-
-                .getFormationById(
-                        id
-                );
+        return formationService.getFormationById(
+                id
+        );
     }
 
     /**
-     * Modification
+     * Modification d'une formation
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
      */
     @PreAuthorize(
             "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
     )
     @PutMapping("/{id}")
-    public FormationResponseDTO
-    updateFormation(
+    public FormationResponseDTO updateFormation(
 
             @PathVariable
             Long id,
@@ -97,20 +102,19 @@ public class FormationController {
 
     ) {
 
-        return formationService
-
-                .updateFormation(
-                        id,
-                        request
-                );
+        return formationService.updateFormation(
+                id,
+                request
+        );
     }
 
     /**
-     * Suppression
+     * Suppression d'une formation
+     *
+     * Autorisés :
+     * - ADMIN uniquement
      */
-    @PreAuthorize(
-            "hasRole('ADMIN')"
-    )
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteFormation(
 
@@ -123,5 +127,4 @@ public class FormationController {
                 id
         );
     }
-
 }

@@ -3,19 +3,31 @@ package com.unchk.backend.formations.controller;
 import com.unchk.backend.formations.dto.TrainingModuleRequestDTO;
 import com.unchk.backend.formations.dto.TrainingModuleResponseDTO;
 import com.unchk.backend.formations.service.TrainingModuleService;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST de gestion des modules de formation.
+ */
 @RestController
 @RequestMapping("/api/training-modules")
 @RequiredArgsConstructor
 public class TrainingModuleController {
 
-    private final TrainingModuleService
-            service;
+    private final TrainingModuleService service;
 
+    /**
+     * Liste de tous les modules.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés
+     */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<TrainingModuleResponseDTO>
     getAllModules() {
@@ -23,6 +35,19 @@ public class TrainingModuleController {
         return service.getAllModules();
     }
 
+    /**
+     * Création d'un module.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
+     */
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
+    )
     @PostMapping
     public TrainingModuleResponseDTO
     createModule(
@@ -37,6 +62,19 @@ public class TrainingModuleController {
         );
     }
 
+    /**
+     * Liste des modules d'une formation.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés
+     *
+     * Remarque :
+     * Cette information est utile pour :
+     * - les étudiants (consulter leur programme),
+     * - les enseignants (connaître les enseignements),
+     * - les responsables pédagogiques.
+     */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(
             "/formation/{formationId}"
     )
@@ -54,6 +92,19 @@ public class TrainingModuleController {
                 );
     }
 
+    /**
+     * Modification d'un module.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
+     */
+    @PreAuthorize(
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
+    )
     @PutMapping("/{id}")
     public TrainingModuleResponseDTO
     updateModule(
@@ -72,6 +123,13 @@ public class TrainingModuleController {
         );
     }
 
+    /**
+     * Consultation du détail d'un module.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés
+     */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public TrainingModuleResponseDTO
     getModuleById(
@@ -81,9 +139,18 @@ public class TrainingModuleController {
 
     ) {
 
-        return service.getModuleById(id);
+        return service.getModuleById(
+                id
+        );
     }
 
+    /**
+     * Suppression d'un module.
+     *
+     * Autorisés :
+     * - ADMIN uniquement
+     */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteModule(
 
@@ -92,6 +159,8 @@ public class TrainingModuleController {
 
     ) {
 
-        service.deleteModule(id);
+        service.deleteModule(
+                id
+        );
     }
 }

@@ -5,6 +5,7 @@ import com.unchk.backend.users.dto.UserResponseDTO;
 import com.unchk.backend.users.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class UserController {
      * @param request données utilisateur
      * @return utilisateur créé
      */
+    @PreAuthorize(
+            "hasRole('ADMIN')"
+    )
     @PostMapping
     public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO request) {
         return userService.createUser(request);
@@ -34,11 +38,23 @@ public class UserController {
      *
      * @return liste utilisateurs
      */
+    @PreAuthorize(
+            "hasRole('ADMIN')"
+    )
     @GetMapping
     public List<UserResponseDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
+    /**
+     * Modification utilisateur
+     * @param id
+     * @param request
+     * @return
+     */
+    @PreAuthorize(
+            "hasRole('ADMIN')"
+    )
     @PutMapping("/{id}")
     public UserResponseDTO updateUser(
 
@@ -56,6 +72,14 @@ public class UserController {
         );
     }
 
+    /**
+     * Suppression utilisateur
+     * @param id
+     */
+
+    @PreAuthorize(
+            "hasRole('ADMIN')"
+    )
     @DeleteMapping("/{id}")
     public void deleteUser(
             @PathVariable
@@ -67,6 +91,16 @@ public class UserController {
         );
     }
 
+    /**
+     * Liste des formateurs
+     * @return
+     */
+    @PreAuthorize(
+            "hasAnyRole("
+                + "'ADMIN',"
+                + "'RESPONSABLE_FORMATION'"
+                + ")"
+    )
     @GetMapping("/trainers")
     public List<UserResponseDTO>
     getAllTrainers() {

@@ -24,7 +24,12 @@ public class CommunicationController {
      * Création
      */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','SUPER_ADMIN')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'SECRETAIRE'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
     @PostMapping
     public CommunicationResponseDTO createCommunication(
@@ -42,7 +47,12 @@ public class CommunicationController {
 
     /**
      * Liste
+     *
+     * Accessible à tous les utilisateurs authentifiés.
+     * Le service filtre les communications
+     * en fonction du rôle de l'utilisateur connecté.
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<CommunicationResponseDTO>
     getAllCommunications() {
@@ -55,7 +65,11 @@ public class CommunicationController {
      * Modification
      */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','SUPER_ADMIN')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'SECRETAIRE'" +
+                    ")"
     )
     @PutMapping("/{id}")
     public CommunicationResponseDTO updateCommunication(
@@ -76,6 +90,12 @@ public class CommunicationController {
     }
 
 
+    /**
+     * Archives
+     *
+     * Accessible à tous les utilisateurs authentifiés.
+     */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/archives")
     public List<CommunicationResponseDTO>
     getArchives() {
@@ -87,9 +107,7 @@ public class CommunicationController {
     /**
      * Suppression
      */
-    @PreAuthorize(
-            "hasAnyRole('ADMIN','SUPER_ADMIN')"
-    )
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteCommunication(
 

@@ -7,11 +7,14 @@ import com.unchk.backend.formations.service.FormationTrainerService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST de gestion des affectations
+ * des formateurs aux formations.
+ */
 @RestController
 @RequestMapping("/api/formation-trainers")
 @RequiredArgsConstructor
@@ -21,10 +24,17 @@ public class FormationTrainerController {
             formationTrainerService;
 
     /**
-     * Affectation
+     * Affectation d'un formateur à une formation.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
      */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
     @PostMapping
     public void assignTrainer(
@@ -40,8 +50,19 @@ public class FormationTrainerController {
     }
 
     /**
-     * Liste
+     * Liste des formateurs affectés à une formation.
+     *
+     * Autorisés :
+     * - Tous les utilisateurs authentifiés
+     *
+     * Remarque :
+     * Cette information peut être utile pour :
+     * - les étudiants (identifier leurs enseignants),
+     * - les enseignants (voir leurs affectations),
+     * - les responsables de formation,
+     * - l'administration.
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{formationId}")
     public List<TrainerResponseDTO>
     getFormationTrainers(
@@ -52,17 +73,23 @@ public class FormationTrainerController {
     ) {
 
         return formationTrainerService
-
                 .getFormationTrainers(
                         formationId
                 );
     }
 
     /**
-     * Retrait
+     * Retrait d'un formateur d'une formation.
+     *
+     * Autorisés :
+     * - ADMIN
+     * - RESPONSABLE_FORMATION
      */
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
     @DeleteMapping(
             "/{formationId}/{trainerId}"

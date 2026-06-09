@@ -19,58 +19,137 @@ public class BudgetController {
 
     private final BudgetService service;
 
+    /**
+     * Création d'un budget
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     */
     @PostMapping
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole('ADMIN','DIRECTION')"
     )
     public BudgetResponseDTO create(
-            @RequestBody BudgetRequestDTO request
+
+            @RequestBody
+            BudgetRequestDTO request
+
     ) {
-        return service.create(request);
+
+        return service.create(
+                request
+        );
     }
 
+    /**
+     * Liste des budgets
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - RESPONSABLE_FORMATION
+     */
     @GetMapping
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
     public List<BudgetResponseDTO> getAll() {
+
         return service.getAll();
     }
 
+    /**
+     * Détail d'un budget
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     * - RESPONSABLE_FORMATION
+     */
     @GetMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole(" +
+                    "'ADMIN'," +
+                    "'DIRECTION'," +
+                    "'RESPONSABLE_FORMATION'" +
+                    ")"
     )
     public BudgetResponseDTO getById(
-            @PathVariable Long id
+
+            @PathVariable
+            Long id
+
     ) {
-        return service.getById(id);
+
+        return service.getById(
+                id
+        );
     }
 
+    /**
+     * Modification d'un budget
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     */
     @PutMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole('ADMIN','DIRECTION')"
     )
     public BudgetResponseDTO update(
-            @PathVariable Long id,
-            @RequestBody BudgetRequestDTO request
+
+            @PathVariable
+            Long id,
+
+            @RequestBody
+            BudgetRequestDTO request
+
     ) {
-        return service.update(id, request);
+
+        return service.update(
+                id,
+                request
+        );
     }
 
+    /**
+     * Suppression d'un budget
+     *
+     * Autorisés :
+     * - ADMIN uniquement
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasRole('ADMIN')"
     )
     public void delete(
-            @PathVariable Long id
+
+            @PathVariable
+            Long id
+
     ) {
-        service.delete(id);
+
+        service.delete(
+                id
+        );
     }
 
+    /**
+     * Téléversement d'un document budgétaire
+     *
+     * Autorisés :
+     * - ADMIN
+     * - DIRECTION
+     */
     @PostMapping("/upload")
     @PreAuthorize(
-            "hasAnyRole('ADMIN','RESPONSABLE_FORMATION')"
+            "hasAnyRole('ADMIN','DIRECTION')"
     )
     public ResponseEntity<Map<String, String>>
     uploadDocument(
