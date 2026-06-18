@@ -1,5 +1,6 @@
 package com.unchk.backend.users.service;
 
+import com.unchk.backend.users.dto.UpdateProfileRequestDTO;
 import com.unchk.backend.users.dto.UserRequestDTO;
 import com.unchk.backend.users.dto.UserResponseDTO;
 import com.unchk.backend.users.entity.Role;
@@ -10,14 +11,13 @@ import com.unchk.backend.users.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Service responsable de la gestion des utilisateurs
- */
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -37,12 +37,9 @@ public class UserService {
 
         Role role = roleRepository
 
-                .findById(
-                        request.getRoleId()
-                )
+                .findById(request.getRoleId())
 
                 .orElseThrow(() ->
-
                         new RuntimeException(
                                 "Role introuvable"
                         )
@@ -71,14 +68,9 @@ public class UserService {
                 .build();
 
         User savedUser =
+                userRepository.save(user);
 
-                userRepository.save(
-                        user
-                );
-
-        return mapToResponse(
-                savedUser
-        );
+        return mapToResponse(savedUser);
     }
 
     /**
@@ -195,9 +187,90 @@ public class UserService {
     }
 
     /**
-     * Récupérer les trainers
+     * Profil connecté
      */
-    public List<UserResponseDTO> getAllTrainers() {
+    public UserResponseDTO getCurrentUser() {
+
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email =
+                authentication.getName();
+
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Utilisateur introuvable"
+                                )
+                        );
+
+        return mapToResponse(user);
+    }
+
+    /**
+     * Modification du profil connecté
+     */
+    public UserResponseDTO updateCurrentUser(
+            UpdateProfileRequestDTO request
+    ) {
+
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email =
+                authentication.getName();
+
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Utilisateur introuvable"
+                                )
+                        );
+
+        user.setFullName(
+                request.getFullName()
+        );
+
+
+        if (
+
+                request.getPassword() != null
+
+                        &&
+
+                        !request.getPassword().isBlank()
+
+        ) {
+
+            user.setPassword(
+
+                    passwordEncoder.encode(
+                            request.getPassword()
+                    )
+            );
+        }
+
+        User updatedUser =
+                userRepository.save(user);
+
+        return mapToResponse(
+                updatedUser
+        );
+    }
+
+    /**
+     * Liste des formateurs
+     */
+    public List<UserResponseDTO>
+    getAllTrainers() {
 
         List<UserRole> trainerRoles = List.of(
 

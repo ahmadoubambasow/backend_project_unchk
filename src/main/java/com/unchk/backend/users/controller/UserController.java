@@ -1,5 +1,6 @@
 package com.unchk.backend.users.controller;
 
+import com.unchk.backend.users.dto.UpdateProfileRequestDTO;
 import com.unchk.backend.users.dto.UserRequestDTO;
 import com.unchk.backend.users.dto.UserResponseDTO;
 import com.unchk.backend.users.service.UserService;
@@ -88,6 +89,28 @@ public class UserController {
 
         userService.deleteUser(
                 id
+        );
+    }
+
+    /**
+     * Récupérer le profil de l'utilisateur courant
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile")
+    public UserResponseDTO getCurrentUser() {
+
+        return userService.getCurrentUser();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/profile")
+    public UserResponseDTO updateCurrentUser(
+            @Valid
+            @RequestBody UpdateProfileRequestDTO request
+    ) {
+
+        return userService.updateCurrentUser(
+                request
         );
     }
 
