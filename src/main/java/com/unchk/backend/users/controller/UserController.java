@@ -6,6 +6,7 @@ import com.unchk.backend.users.dto.UserResponseDTO;
 import com.unchk.backend.users.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -130,5 +131,23 @@ public class UserController {
 
         return userService
                 .getAllTrainers();
+    }
+
+    /**
+     * Liste des étudiants
+     * @return
+     */
+    @PreAuthorize(
+            "hasAnyRole("
+                    + "'ADMIN',"
+                    + "'RESPONSABLE_FORMATION'"
+                    + ")"
+    )
+    @GetMapping("/students")
+    public ResponseEntity<List<UserResponseDTO>> getStudents() {
+
+        return ResponseEntity.ok(
+                userService.getStudents()
+        );
     }
 }

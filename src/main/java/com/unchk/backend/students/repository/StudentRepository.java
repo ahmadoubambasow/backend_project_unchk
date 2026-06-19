@@ -13,6 +13,8 @@ public interface StudentRepository
             String ine
     );
 
+    boolean existsByUserId(Long userId);
+
     List<Student>
     findByFormationId(
             Long formationId

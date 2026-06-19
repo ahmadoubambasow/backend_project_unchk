@@ -15,9 +15,11 @@ public class StudentResponseDTO {
 
     private String ine;
 
-    private String firstName;
+    private Long userId;
 
-    private String lastName;
+    private String fullName;
+
+    private String email;
 
     private LocalDate birthDate;
 

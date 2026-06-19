@@ -293,6 +293,17 @@ public class UserService {
     }
 
     /**
+     * Liste des utilisateurs avec un role etudiant
+     */
+    public List<UserResponseDTO> getStudents() {
+
+        return userRepository.findByRole_Name(UserRole.ETUDIANT)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    /**
      * Mapping Entity -> DTO
      */
     private UserResponseDTO mapToResponse(

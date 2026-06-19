@@ -9,6 +9,8 @@ import com.unchk.backend.students.entity.StudentGroup;
 import com.unchk.backend.students.repository.StudentGroupRepository;
 import com.unchk.backend.students.repository.StudentRepository;
 
+import com.unchk.backend.users.entity.User;
+import com.unchk.backend.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -25,7 +27,10 @@ public class StudentService {
     private final FormationRepository
             formationRepository;
 
-    private final StudentGroupRepository studentGroupRepository;
+    private final StudentGroupRepository
+            studentGroupRepository;
+
+    private final UserRepository userRepository;
 
     /**
      * Création
@@ -67,6 +72,13 @@ public class StudentService {
                                 )
                         );
 
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User introuvable"
+                        )
+                        );
+
         Student student =
 
                 Student.builder()
@@ -75,13 +87,7 @@ public class StudentService {
                                 generateIne(request.getStartYear())
                         )
 
-                        .firstName(
-                                request.getFirstName()
-                        )
-
-                        .lastName(
-                                request.getLastName()
-                        )
+                        .user(user)
 
                         .birthDate(
                                 request.getBirthDate()
@@ -113,6 +119,14 @@ public class StudentService {
                         )
 
                         .build();
+
+        if (studentRepository.existsByUserId(
+                request.getUserId()
+        )) {
+            throw new RuntimeException(
+                    "Cet utilisateur possède déjà un dossier étudiant"
+            );
+        }
 
         student = studentRepository.save(
                 student
@@ -244,6 +258,14 @@ public class StudentService {
                                 )
                         );
 
+        User user = userRepository
+                .findById(request.getUserId())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Utilisateur introuvable"
+                        )
+                );
+
         Student student =
 
                 studentRepository
@@ -272,13 +294,7 @@ public class StudentService {
                                 )
                         );
 
-        student.setFirstName(
-                request.getFirstName()
-        );
-
-        student.setLastName(
-                request.getLastName()
-        );
+        student.setUser(user);
 
         student.setBirthDate(
                 request.getBirthDate()
@@ -389,12 +405,22 @@ public class StudentService {
                         student.getIne()
                 )
 
-                .firstName(
-                        student.getFirstName()
+                .userId(
+                        student.getUser() != null
+                                ? student.getUser().getId()
+                                : null
                 )
 
-                .lastName(
-                        student.getLastName()
+                .fullName(
+                        student.getUser() != null
+                                ? student.getUser().getFullName()
+                                : null
+                )
+
+                .email(
+                        student.getUser() != null
+                                ? student.getUser().getEmail()
+                                : null
                 )
 
                 .promotion(

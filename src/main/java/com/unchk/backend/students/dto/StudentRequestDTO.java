@@ -11,9 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class StudentRequestDTO {
 
-    private String firstName;
-
-    private String lastName;
+    private Long userId;
 
     private LocalDate birthDate;
 
