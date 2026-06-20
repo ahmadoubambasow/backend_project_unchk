@@ -185,9 +185,12 @@ public class GraduateInsertionService {
                 )
 
                 .studentName(
-                        insertion.getStudent().getFirstName()
-                                + " "
-                                + insertion.getStudent().getLastName()
+                        insertion.getStudent() != null
+                                && insertion.getStudent().getUser() != null
+                                ? insertion.getStudent()
+                                .getUser()
+                                .getFullName()
+                                : "Étudiant non associé"
                 )
 
                 .status(

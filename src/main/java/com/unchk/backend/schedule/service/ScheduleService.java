@@ -1,5 +1,6 @@
 package com.unchk.backend.schedule.service;
 
+import com.unchk.backend.students.entity.Student;
 import com.unchk.backend.students.entity.StudentGroup;
 import com.unchk.backend.students.repository.StudentGroupRepository;
 import com.unchk.backend.formations.entity.TrainingModule;
@@ -8,6 +9,7 @@ import com.unchk.backend.schedule.dto.ScheduleRequestDTO;
 import com.unchk.backend.schedule.dto.ScheduleResponseDTO;
 import com.unchk.backend.schedule.entity.Schedule;
 import com.unchk.backend.schedule.repository.ScheduleRepository;
+import com.unchk.backend.students.repository.StudentRepository;
 import com.unchk.backend.users.entity.User;
 import com.unchk.backend.users.repository.UserRepository;
 
@@ -33,6 +35,8 @@ public class ScheduleService {
 
     private final UserRepository
             userRepository;
+
+    private final StudentRepository studentRepository;
 
     /**
      * Création créneau
@@ -604,6 +608,40 @@ public class ScheduleService {
         System.out.println(
                 "ROLE = " + role
         );
+
+        if (role.equals("ETUDIANT")) {
+
+            Student student =
+
+                    studentRepository
+
+                            .findByUserId(
+                                    user.getId()
+                            )
+
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Étudiant introuvable"
+                                    )
+                            );
+
+            if (student.getGroup() == null) {
+
+                return List.of();
+            }
+
+            return scheduleRepository
+
+                    .findByGroupId(
+                            student.getGroup().getId()
+                    )
+
+                    .stream()
+
+                    .map(this::mapToResponse)
+
+                    .toList();
+        }
 
         if (
 

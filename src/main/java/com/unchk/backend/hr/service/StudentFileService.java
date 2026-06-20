@@ -299,6 +299,24 @@ public class StudentFileService {
             StudentFile studentFile
     ) {
 
+        String fullName = null;
+        String email = null;
+
+        if (studentFile.getStudent() != null
+                && studentFile.getStudent().getUser() != null) {
+
+            fullName =
+                    studentFile.getStudent()
+                            .getUser()
+                            .getFullName();
+
+            email =
+                    studentFile.getStudent()
+                            .getUser()
+                            .getEmail();
+        }
+
+
         return StudentFileResponseDTO
 
                 .builder()
@@ -312,13 +330,11 @@ public class StudentFileService {
                 )
 
                 .fullName(
-                        studentFile.getStudent().getFirstName()
-                                + " "
-                                + studentFile.getStudent().getLastName()
-                )
+                        fullName
+                        )
 
                 .email(
-                        null
+                        email
                 )
 
                 .registrationNumber(

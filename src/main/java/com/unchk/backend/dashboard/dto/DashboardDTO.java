@@ -92,4 +92,14 @@ public class DashboardDTO {
     private String insertionCompany;
 
     private String insertionPosition;
+
+    private String studentFullName;
+
+    private String studentEmail;
+
+
+
+
+
+
 }

@@ -291,16 +291,12 @@ public class InternshipService {
                 .studentName(
 
                         internship.getStudent()
-                                .getFirstName()
+                                .getUser() != null
+                                ? internship.getStudent()
+                                .getUser()
+                                .getFullName()
 
-                                +
-
-                                " "
-
-                                +
-
-                                internship.getStudent()
-                                        .getLastName()
+                                : null
                 )
 
                 .partnerId(

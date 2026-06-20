@@ -12,6 +12,8 @@ public interface FormationTrainerRepository
     List<FormationTrainer>
     findByFormationId(Long formationId);
 
+    List<FormationTrainer> findByTrainerId(Long trainerId);
+
     void deleteByFormationIdAndTrainerId(
             Long formationId,
             Long trainerId

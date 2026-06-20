@@ -391,6 +391,16 @@ public class DashboardServiceImpl implements DashboardService {
 
     }
 
+    private String getCurrentUserEmail() {
+
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        return authentication.getName();
+    }
+
     private DashboardDTO buildTeacherDashboard() {
 
         return DashboardDTO.builder()
@@ -420,8 +430,101 @@ public class DashboardServiceImpl implements DashboardService {
 
     private DashboardDTO buildStudentDashboard() {
 
+        String email = getCurrentUserEmail();
+
+        var user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Utilisateur introuvable"
+                        )
+                );
+
+        var student = studentRepository
+                .findByUserId(user.getId())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Dossier étudiant introuvable"
+                        )
+                );
+
+        var internship =
+                internshipRepository
+                        .findByStudent_Id(student.getId())
+                        .orElse(null);
+
+        var insertion =
+                graduateInsertionRepository
+                        .findByStudentId(student.getId())
+                        .orElse(null);
+
         return DashboardDTO.builder()
+
                 .dashboardType("ETUDIANT")
+
+                .studentIne(
+                        student.getIne()
+                )
+
+                .studentFormation(
+                        student.getFormation() != null
+                                ? student.getFormation().getName()
+                                : null
+                )
+
+                .studentFullName(
+                        user.getFullName()
+                )
+
+                .studentEmail(
+                        user.getEmail()
+                )
+
+                .studentGroup(
+                        student.getGroup() != null
+                                ? student.getGroup().getName()
+                                : null
+                )
+
+                .studentPromotion(
+                        student.getPromotion()
+                )
+
+                // Stage
+                .internshipCompany(
+                        internship != null &&
+                                internship.getPartner() != null
+                                ? internship.getPartner().getName()
+                                : null
+                )
+
+                .internshipStatus(
+                        internship != null &&
+                                internship.getStatus() != null
+                                ? internship.getStatus().name()
+                                : null
+                )
+
+                // Insertion
+                .insertionStatus(
+                        insertion != null &&
+                                insertion.getStatus() != null
+                                ? insertion.getStatus().name()
+                                : null
+                )
+
+                .insertionCompany(
+                        insertion != null
+                                ? insertion.getCompany()
+                                : null
+                )
+
+                .insertionPosition(
+                        insertion != null
+                                ? insertion.getPosition()
+                                : null
+                )
+
                 .build();
     }
 
