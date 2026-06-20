@@ -44,6 +44,22 @@ public class CommunicationService {
             CommunicationRequestDTO request
     ) {
 
+        Authentication authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email = authentication.getName();
+
+        User currentUser =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Utilisateur introuvable"
+                                )
+                        );
+
         Communication communication =
 
                 Communication.builder()
@@ -152,31 +168,35 @@ public class CommunicationService {
                         + users.size()
         );
 
-        users.forEach(user -> {
+        users.stream()
 
-            UserNotification userNotification =
+                .filter(user ->
 
-                    UserNotification.builder()
+                        !user.getId().equals(
+                                currentUser.getId()
+                        )
+                )
 
-                            .user(
-                                    user
-                            )
+                .forEach(user -> {
 
-                            .notification(
-                                    savedNotification
-                            )
+                    UserNotification userNotification =
 
-                            .isRead(
-                                    false
-                            )
+                            UserNotification.builder()
 
-                            .build();
+                                    .user(user)
 
-            userNotificationRepository.save(
-                    userNotification
-            );
-        });
+                                    .notification(
+                                            savedNotification
+                                    )
 
+                                    .isRead(false)
+
+                                    .build();
+
+                    userNotificationRepository.save(
+                            userNotification
+                    );
+                });
         return mapToResponse(
                 savedCommunication
         );

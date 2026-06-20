@@ -20,4 +20,21 @@ public class NotificationResponseDTO {
     private Boolean isRead;
 
     private LocalDateTime createdAt;
+
+    // Communication
+    private Long communicationId;
+
+    private String communicationTitle;
+
+    private String communicationType;
+
+    private String communicationDescription;
+
+    private String communicationReport;
+
+    private LocalDateTime eventDate;
+
+    private String documentName;
+
+    private String documentUrl;
 }

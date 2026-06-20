@@ -134,10 +134,14 @@ public class NotificationService {
     /**
      * Mapping
      */
-    private NotificationResponseDTO
-    mapToResponse(
+    private NotificationResponseDTO mapToResponse(
             UserNotification notification
     ) {
+
+        var communication =
+                notification
+                        .getNotification()
+                        .getCommunication();
 
         return NotificationResponseDTO
 
@@ -149,17 +153,13 @@ public class NotificationService {
 
                 .title(
                         notification
-
                                 .getNotification()
-
                                 .getTitle()
                 )
 
                 .message(
                         notification
-
                                 .getNotification()
-
                                 .getMessage()
                 )
 
@@ -169,10 +169,56 @@ public class NotificationService {
 
                 .createdAt(
                         notification
-
                                 .getNotification()
-
                                 .getCreatedAt()
+                )
+
+                .communicationId(
+                        communication != null
+                                ? communication.getId()
+                                : null
+                )
+
+                .communicationTitle(
+                        communication != null
+                                ? communication.getTitle()
+                                : null
+                )
+
+                .communicationType(
+                        communication != null
+                                ? communication.getType().name()
+                                : null
+                )
+
+                .communicationDescription(
+                        communication != null
+                                ? communication.getDescription()
+                                : null
+                )
+
+                .communicationReport(
+                        communication != null
+                                ? communication.getReport()
+                                : null
+                )
+
+                .eventDate(
+                        communication != null
+                                ? communication.getEventDate()
+                                : null
+                )
+
+                .documentName(
+                        communication != null
+                                ? communication.getDocumentName()
+                                : null
+                )
+
+                .documentUrl(
+                        communication != null
+                                ? communication.getDocumentUrl()
+                                : null
                 )
 
                 .build();
