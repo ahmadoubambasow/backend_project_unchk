@@ -13,10 +13,13 @@ import com.unchk.backend.insertion.repository.GraduateInsertionRepository;
 import com.unchk.backend.insertion.repository.InternshipRepository;
 import com.unchk.backend.insertion.repository.PartnerRepository;
 import com.unchk.backend.promotions.repository.PromotionRepository;
+import com.unchk.backend.schedule.entity.Schedule;
+import com.unchk.backend.schedule.repository.ScheduleRepository;
 import com.unchk.backend.students.entity.Student;
 import com.unchk.backend.students.repository.StudentGroupRepository;
 import com.unchk.backend.students.repository.StudentRepository;
 import com.unchk.backend.users.entity.Role;
+import com.unchk.backend.users.entity.User;
 import com.unchk.backend.users.entity.UserRole;
 import com.unchk.backend.users.repository.RoleRepository;
 import com.unchk.backend.users.repository.UserRepository;
@@ -56,6 +59,7 @@ public class DashboardServiceImpl implements DashboardService {
     private final GraduateInsertionRepository graduateInsertionRepository;
 
     private final AdministrativeDocumentRepository administrativeDocumentRepository;
+    private final ScheduleRepository scheduleRepository;
 
 
     @Override
@@ -391,6 +395,22 @@ public class DashboardServiceImpl implements DashboardService {
 
     }
 
+    private User getCurrentUser() {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Utilisateur introuvable"
+                        )
+                );
+    }
+
     private String getCurrentUserEmail() {
 
         Authentication authentication =
@@ -403,10 +423,130 @@ public class DashboardServiceImpl implements DashboardService {
 
     private DashboardDTO buildTeacherDashboard() {
 
+        User user = getCurrentUser();
+
+        List<Schedule> schedules =
+                scheduleRepository.findByTrainerId(
+                        user.getId()
+                );
+
+        Set<Long> groupIds =
+                schedules.stream()
+                        .map(schedule ->
+                                schedule.getGroup().getId()
+                        )
+                        .collect(Collectors.toSet());
+
+        long totalGroups =
+                groupIds.size();
+
+        long totalStudents =
+
+                studentRepository.findAll()
+
+                        .stream()
+
+                        .filter(student ->
+
+                                student.getGroup() != null
+
+                                        &&
+
+                                        groupIds.contains(
+                                                student.getGroup().getId()
+                                        )
+                        )
+
+                        .count();
+
+        List<DashboardItemDTO> teacherModules =
+                schedules.stream()
+
+                        .map(Schedule::getTrainingModule)
+
+                        .distinct()
+
+                        .map(module ->
+                                DashboardItemDTO.builder()
+                                        .label(module.getTitle())
+                                        .value(1L)
+                                        .build()
+                        )
+
+                        .toList();
+
+        List<DashboardItemDTO> studentsByGroup =
+
+                groupIds.stream()
+
+                        .map(groupId -> {
+
+                            long count =
+
+                                    studentRepository
+                                            .findByGroupId(groupId)
+                                            .size();
+
+                            String groupName =
+
+                                    schedules.stream()
+
+                                            .filter(schedule ->
+
+                                                    schedule.getGroup()
+                                                            .getId()
+                                                            .equals(groupId)
+                                            )
+
+                                            .findFirst()
+
+                                            .map(schedule ->
+
+                                                    schedule.getGroup()
+                                                            .getName()
+                                            )
+
+                                            .orElse("Groupe");
+
+                            return DashboardItemDTO
+                                    .builder()
+                                    .label(groupName)
+                                    .value(count)
+                                    .build();
+                        })
+
+                        .toList();
+
+
+        Set<Long> moduleIds =
+                schedules.stream()
+                        .map(schedule ->
+                                schedule.getTrainingModule().getId()
+                        )
+                        .collect(Collectors.toSet());
+
+        long totalModules =
+                moduleIds.size();
+
+        long totalSchedules =
+                schedules.size();
+
         return DashboardDTO.builder()
+
                 .dashboardType("TUTEUR")
-                .totalStudents(studentRepository.count())
-                .totalFormations(formationRepository.count())
+                
+                .totalStudents(totalStudents)
+
+                .totalGroups(totalGroups)
+
+                .teacherModules(teacherModules)
+
+                .totalModules(totalModules)
+
+                .totalSchedules(totalSchedules)
+
+                .studentsByGroup(studentsByGroup)
+
                 .build();
     }
 

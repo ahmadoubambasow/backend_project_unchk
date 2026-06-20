@@ -42,6 +42,7 @@ public class DashboardDTO {
     private List<DashboardItemDTO> studentsByGroup;
     private List<DashboardItemDTO> documentsByType;
     private List<DashboardItemDTO> partnersBySector;
+    private List<DashboardItemDTO> teacherModules;
 
     private long incomingDocuments;
 
@@ -96,6 +97,12 @@ public class DashboardDTO {
     private String studentFullName;
 
     private String studentEmail;
+
+    private Long totalModules;
+
+    private Long totalSchedules;
+
+
 
 
 
