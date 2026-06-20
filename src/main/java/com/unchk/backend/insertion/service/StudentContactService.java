@@ -304,16 +304,8 @@ public class StudentContactService {
                 .studentName(
 
                         contact.getStudent()
-                                .getFirstName()
-
-                                +
-
-                                " "
-
-                                +
-
-                                contact.getStudent()
-                                        .getLastName()
+                                .getUser()
+                                .getFullName()
                 )
 
                 .createdById(
